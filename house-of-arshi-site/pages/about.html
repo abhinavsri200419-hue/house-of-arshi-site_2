@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>About Us | House of Arshi</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@500;600;700;800&family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../assets/style.css">
+</head>
+<body>
+
+<nav class="navbar">
+  <div class="nav-inner">
+    <div class="nav-left">
+      <button class="burger" onclick="toggleMobileMenu()" aria-label="Open menu">
+        <span></span><span></span><span></span>
+      </button>
+      <a href="../index.html" class="nav-logo">
+        <img src="../assets/mark-black.png" alt="House of Arshi mark" class="mark-img">
+        <div class="logo-text-block">
+          <span class="logo-wordmark">House of Arshi</span>
+          <span class="logo-tagline">Timeless Elegance, Crafted For You</span>
+        </div>
+      </a>
+    </div>
+    <ul class="nav-links">
+      <li><a href="fusion-wear.html">Fusion Wear</a></li>
+      <li><a href="indo-western.html">Indo Western</a></li>
+      <li><a href="semi-formals.html">Semi Formals</a></li>
+      <li><a href="sarees.html">Sarees</a></li>
+      <li><a href="formals.html">Formals</a></li>
+    </ul>
+    <div class="nav-right">
+      <button class="nav-icon-btn" onclick="openDrawer('wishlistDrawer')" aria-label="Open wishlist">
+        <svg viewBox="0 0 24 24"><path d="M12 21s-7-4.5-9.3-9C1 8.5 2 5 5.3 5c2 0 3.3 1.2 3.7 2 .4-.8 1.7-2 3.7-2C16 5 17 8.5 15.3 12 13 16.5 12 21 12 21z"/></svg>
+        <span class="badge-count" id="wishlistBadge" style="display:none;">0</span>
+      </button>
+      <button class="nav-icon-btn" id="cartIconBtn" onclick="openDrawer('cartDrawer')" aria-label="Open cart">
+        <svg viewBox="0 0 24 24"><path d="M6 6h15l-1.5 9h-12z"/><path d="M6 6L4 3H2"/><circle cx="9" cy="20" r="1"/><circle cx="18" cy="20" r="1"/></svg>
+        <span class="badge-count" id="cartBadge" style="display:none;">0</span>
+      </button>
+      <a href="login.html" id="navAccountLink" class="nav-account-link">Login</a>
+    </div>
+  </div>
+</nav>
+
+<div class="about-hero-full">
+  <div id="aboutHeroImg" style="position:absolute; inset:0; height:100%;"></div>
+  <div class="about-hero-full-content">
+    <span class="eyebrow">House of Arshi, Visakhapatnam</span>
+    <h1>Every Stitch<br>Tells A Story.</h1>
+  </div>
+</div>
+
+<section>
+  <div class="container">
+    <div class="about-row">
+      <div id="aboutWhoWeAreImg" style="border-radius:10px; aspect-ratio:4/5; overflow:hidden;"></div>
+      <div>
+        <span class="eyebrow">Who We Are</span>
+        <h2>About House of Arshi</h2>
+        <p>[Filler, replace with your story] House of Arshi is a women's fashion label born from a simple belief, that Indian women deserve a wardrobe that keeps up with them. We design for the woman who moves fast, feels deeply, and refuses to compromise style for comfort, or heritage for modernity.</p>
+        <p>From the streets of Visakhapatnam to screens across the country, House of Arshi is built to be worn, loved, and lived in, whether you are catching a 9am lecture, closing a deal in the boardroom, or winding down after a long beautiful day.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="alt-bg">
+  <div class="container">
+    <div class="about-row reverse">
+      <div id="aboutBeginningImg" style="border-radius:10px; aspect-ratio:4/5; overflow:hidden;"></div>
+      <div>
+        <span class="eyebrow">Our Beginning</span>
+        <h2>When It All Started</h2>
+        <p>[Filler, replace with founding year and backstory] House of Arshi was founded in [Year] in Visakhapatnam, Andhra Pradesh, with a single rack of carefully curated pieces and a vision that was anything but small. What started as a passion project soon grew into a full fledged label, driven by an obsession with fit, fabric, and the feeling of putting on something that just works.</p>
+        <p>The name Arshi, meaning mirror in Urdu, was chosen intentionally. Because every piece we make is meant to reflect who you already are, not who fashion tells you to be.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section>
+  <div class="container">
+    <div class="about-row reverse">
+      <div>
+        <div id="aboutMotiveImg" style="border-radius:10px; aspect-ratio:4/5; overflow:hidden; margin-bottom:24px;"></div>
+        <div class="value-cards-grid">
+          <div class="value-card">
+            <span class="vc-icon">🌿</span>
+            <h4>Conscious Fabrics</h4>
+            <p>Premium Indian textiles, thoughtfully chosen for feel and durability.</p>
+          </div>
+          <div class="value-card">
+            <span class="vc-icon">✂️</span>
+            <h4>Precision Fits</h4>
+            <p>Silhouettes refined for Indian body proportions, not borrowed from abroad.</p>
+          </div>
+          <div class="value-card">
+            <span class="vc-icon">🤍</span>
+            <h4>Real Women</h4>
+            <p>Designed with college students, working professionals and everyone in between.</p>
+          </div>
+          <div class="value-card">
+            <span class="vc-icon">🚚</span>
+            <h4>Pan India Reach</h4>
+            <p>Delivering across India in 4 to 6 days, with easy 7 day returns.</p>
+          </div>
+        </div>
+      </div>
+      <div>
+        <span class="eyebrow">What Drives Us</span>
+        <h2>Our Motive and Inspiration</h2>
+        <p>[Filler, replace with brand motive] Our motive is straightforward, clothing that does not ask you to choose. Too often, Indian women feel the pull between traditional and modern, between what the occasion demands and what they actually want to wear. House of Arshi exists to dissolve that boundary.</p>
+        <p>We draw inspiration from the women around us, the college girl making her first big presentation, the working professional who wants to look sharp without looking stiff, the woman at home who deserves softness and luxury at the end of her day. Every collection is designed with all of them in mind.</p>
+        <p>[Filler] Our fabrics are sourced from trusted Indian textile hubs. Our silhouettes are refined with input from real women, not just mood boards. And our sizing is built for Indian bodies, because representation is not a trend, it is the standard.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section>
+  <div class="container">
+    <div class="about-thanks-banner">
+      <h2>Thank you for taking the time<br>to know us a little better.</h2>
+      <p>Honestly? It means the world. Behind every label and every carefully folded piece is a team that genuinely cares, about craft, about comfort, and about you. You are not just a customer here. You are the reason House of Arshi exists.</p>
+      <p>Now go find something beautiful. You deserve it. 🌸</p>
+      <div class="signoff">With Love, House of Arshi, Vizag</div>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="container">
+    <div class="footer-grid">
+      <div>
+        <div class="footer-logo"><img src="../assets/mark-white.png" alt="House of Arshi" style="height:44px; filter:none;"></div>
+        <p>Fusion, ethnic and everyday fits for the girl who is always a little bit of both. Desi at heart, modern by design.</p>
+        <div class="footer-social">
+          <a href="#" aria-label="Instagram"><svg viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r="0.8" fill="currentColor"/></svg></a>
+          <a href="#" aria-label="Pinterest"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M9 18l2-9M12 14c2 0 4-1.5 4-4.5S14 5 12 5 8 7 8 9.5"/></svg></a>
+          <a href="#" aria-label="WhatsApp"><svg viewBox="0 0 24 24"><path d="M21 11.5a8.5 8.5 0 1 1-4-7.2"/><path d="M21 11.5L13 12l3-7"/></svg></a>
+        </div>
+      </div>
+      <div class="footer-col">
+        <h4>Shop</h4>
+        <a href="fusion-wear.html">Fusion Wear</a>
+        <a href="indo-western.html">Indo Western</a>
+        <a href="semi-formals.html">Semi Formals</a>
+        <a href="sarees.html">Sarees</a>
+        <a href="formals.html">Formals</a>
+      </div>
+      <div class="footer-col">
+        <h4>Company</h4>
+        <a href="about.html">About Us</a>
+        <a href="#">Contact</a>
+        <a href="cart.html">Your Bag</a>
+        <a href="wishlist.html">Wishlist</a>
+      </div>
+      <div class="footer-col">
+        <h4>Stay In The Loop</h4>
+        <p style="margin-bottom:14px;">Drops, discounts and nothing you will want to skip.</p>
+        <form class="footer-newsletter-form" onsubmit="event.preventDefault(); showToast('You are on the list 🤍');">
+          <input type="email" placeholder="Your email" required>
+          <button type="submit">Join</button>
+        </form>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <span>© 2026 House of Arshi. All rights reserved.</span>
+      <span>Designed for the women who do it all.</span>
+    </div>
+  </div>
+</footer>
+
+<div class="toast" id="toast"><svg viewBox="0 0 24 24"><path d="M20 6L9 17l-5-5"/></svg><span></span></div>
+<div class="overlay-scrim" id="overlayScrim"></div>
+
+<div class="drawer" id="cartDrawer">
+  <div class="drawer-header"><h3>Your Bag</h3><button class="drawer-close" onclick="closeDrawers()" aria-label="Close cart"><svg viewBox="0 0 24 24"><path d="M18 6L6 18M6 6l12 12"/></svg></button></div>
+  <div class="drawer-body" id="cartBody"></div>
+  <div class="drawer-footer" id="cartFooter" style="display:none;">
+    <div class="drawer-subtotal"><span>Subtotal</span><span id="cartSubtotal">₹0</span></div>
+    <a href="cart.html" class="btn btn-primary" style="display:block; text-align:center;">View Bag and Checkout</a>
+    <p class="drawer-note">Shipping and taxes calculated at checkout</p>
+  </div>
+</div>
+<div class="drawer" id="wishlistDrawer">
+  <div class="drawer-header"><h3>Your Wishlist</h3><button class="drawer-close" onclick="closeDrawers()" aria-label="Close wishlist"><svg viewBox="0 0 24 24"><path d="M18 6L6 18M6 6l12 12"/></svg></button></div>
+  <div class="drawer-body" id="wishlistBody"></div>
+</div>
+
+<script src="../assets/data/products.data.js"></script>
+<script src="../assets/data/site-structure.data.js"></script>
+<script src="../assets/data/images.data.js"></script>
+<script src="../assets/api-client.js"></script>
+<script src="../assets/app.js"></script>
+<script src="../assets/modal.js"></script>
+<script>
+  document.getElementById('aboutHeroImg').innerHTML = sectionImageHTML('about', 'hero_banner', 4);
+  document.getElementById('aboutWhoWeAreImg').innerHTML = sectionImageHTML('about', 'who_we_are_image', 3);
+  document.getElementById('aboutBeginningImg').innerHTML = sectionImageHTML('about', 'our_beginning_image', 5);
+  document.getElementById('aboutMotiveImg').innerHTML = sectionImageHTML('about', 'motive_image', 6);
+</script>
+</body>
+</html>

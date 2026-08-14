@@ -1,0 +1,383 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>House of Arshi | Wear Your Story</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@500;600;700;800&family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/style.css">
+</head>
+<body>
+
+<div class="marquee">
+  <div class="marquee-track">
+    <span>Free Shipping Above ₹1,999</span>
+    <span>New Drop Every Friday</span>
+    <span>Made For The Way You Actually Live</span>
+    <span>Easy 7-Day Exchange</span>
+    <span>Free Shipping Above ₹1,999</span>
+    <span>New Drop Every Friday</span>
+    <span>Made For The Way You Actually Live</span>
+    <span>Easy 7-Day Exchange</span>
+  </div>
+</div>
+
+<nav class="navbar">
+  <div class="nav-inner">
+    <div class="nav-left">
+      <button class="burger" onclick="toggleMobileMenu()" aria-label="Open menu">
+        <span></span><span></span><span></span>
+      </button>
+      <a href="index.html" class="nav-logo">
+        <img src="assets/mark-black.png" alt="House of Arshi mark" class="mark-img">
+        <div class="logo-text-block">
+          <span class="logo-wordmark">House of Arshi</span>
+          <span class="logo-tagline">Timeless Elegance, Crafted For You</span>
+        </div>
+      </a>
+    </div>
+    <ul class="nav-links">
+      <li><a href="pages/fusion-wear.html">Fusion Wear</a></li>
+      <li><a href="pages/indo-western.html">Indo Western</a></li>
+      <li><a href="pages/semi-formals.html">Semi Formals</a></li>
+      <li><a href="pages/sarees.html">Sarees</a></li>
+      <li><a href="pages/formals.html">Formals</a></li>
+    </ul>
+    <div class="nav-right">
+      <div class="search-box">
+        <svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3"/></svg>
+        <input type="text" id="searchInput" placeholder="Search kurtis, sarees, sets...">
+      </div>
+      <button class="nav-icon-btn" onclick="openDrawer('wishlistDrawer')" aria-label="Open wishlist">
+        <svg viewBox="0 0 24 24"><path d="M12 21s-7-4.5-9.3-9C1 8.5 2 5 5.3 5c2 0 3.3 1.2 3.7 2 .4-.8 1.7-2 3.7-2C16 5 17 8.5 15.3 12 13 16.5 12 21 12 21z"/></svg>
+        <span class="badge-count" id="wishlistBadge" style="display:none;">0</span>
+      </button>
+      <button class="nav-icon-btn" id="cartIconBtn" onclick="openDrawer('cartDrawer')" aria-label="Open cart">
+        <svg viewBox="0 0 24 24"><path d="M6 6h15l-1.5 9h-12z"/><path d="M6 6L4 3H2"/><circle cx="9" cy="20" r="1"/><circle cx="18" cy="20" r="1"/></svg>
+        <span class="badge-count" id="cartBadge" style="display:none;">0</span>
+      </button>
+      <a href="pages/login.html" id="navAccountLink" class="nav-account-link">Login</a>
+    </div>
+  </div>
+</nav>
+
+<!-- ============ HERO SLIDESHOW ============ -->
+<section class="hero">
+  <div class="hero-slide active" id="heroSlide0"></div>
+  <div class="hero-slide" id="heroSlide1"></div>
+  <div class="hero-slide" id="heroSlide2"></div>
+
+  <div class="hero-content">
+    <span class="eyebrow">New Season, House Of Arshi</span>
+    <h1>Wear Your<br>Story Loud</h1>
+    <p>Fusion, ethnic and everyday fits made for girls who do it all, from campus to cafe to boardroom.</p>
+    <div class="hero-ctas">
+      <a href="pages/fusion-wear.html" class="btn btn-gold">Shop Fusion Wear</a>
+      <a href="pages/indo-western.html" class="btn btn-ghost-light">Explore Indo Western</a>
+    </div>
+  </div>
+
+  <div class="hero-dots">
+    <button class="active" aria-label="Slide 1"></button>
+    <button aria-label="Slide 2"></button>
+    <button aria-label="Slide 3"></button>
+  </div>
+</section>
+
+<!-- ============ FUSION WEAR ============ -->
+<section class="section" id="fusion">
+  <div class="container">
+    <div class="section-head-row">
+      <div class="section-title">
+        <span class="eyebrow">01, Everyday Edit</span>
+        <h2>Fusion Wear</h2>
+      </div>
+      <a href="pages/fusion-wear.html" class="btn btn-outline">View All Fusion Wear</a>
+    </div>
+
+    <div class="showcase-strip" id="fusionTiles"></div>
+  </div>
+</section>
+
+<!-- ============ INDO WESTERN ============ -->
+<section class="section on-dark" id="indo-western">
+  <div class="container">
+    <div class="section-head-row">
+      <div class="section-title">
+        <span class="eyebrow on-dark">02, Best Of Both Worlds</span>
+        <h2>Indo Western</h2>
+      </div>
+      <a href="pages/indo-western.html" class="btn btn-ghost-light">View All Indo Western</a>
+    </div>
+
+    <div class="product-grid" id="indoFeaturedGrid" style="margin-top:24px;"></div>
+  </div>
+</section>
+
+<!-- ============ SEMI FORMALS ============ -->
+<section class="section">
+  <div class="container">
+    <div class="section-head-row">
+      <div class="section-title">
+        <span class="eyebrow">03, Sharp And Comfortable</span>
+        <h2>Semi Formals</h2>
+      </div>
+      <a href="pages/semi-formals.html" class="btn btn-outline">View All Semi Formals</a>
+    </div>
+
+    <div class="product-grid" id="semiFormalsFeaturedGrid" style="margin-top:24px;"></div>
+  </div>
+</section>
+
+<!-- ============ SAREES ============ -->
+<section class="section alt-bg" id="sarees">
+  <div class="container">
+    <div class="sarees-banner">
+      <div id="sareesBannerImg" style="position:absolute; inset:0;"></div>
+      <div class="sarees-banner-content">
+        <span class="eyebrow on-dark" style="display:block; margin-bottom:14px;">03, Sarees Reimagined</span>
+        <h2 style="color:var(--ivory); margin-bottom:16px;">Drape, Your Way</h2>
+        <p style="color:rgba(248,244,236,0.82); margin-bottom:26px;">Handloom weaves, festive silks and everyday drapes, made for the woman who wears six yards like she means it.</p>
+        <a href="pages/sarees.html" class="btn btn-gold">Shop Sarees</a>
+      </div>
+    </div>
+
+    <div class="product-grid" id="sareesFeaturedGrid" style="margin-top:48px;"></div>
+  </div>
+</section>
+
+<!-- ============ FORMALS TEASER ============ -->
+<section class="section" id="formals">
+  <div class="container">
+    <a href="pages/formals.html" class="formals-teaser">
+      <div id="formalsTeaserImg" style="position:absolute; inset:0;"></div>
+      <div class="formals-teaser-content">
+        <div class="formals-badge"><span class="dot"></span> Dropping Soon</div>
+        <h2 style="color:var(--ivory); margin-bottom:14px;">Formals That Mean Business</h2>
+        <p style="color:rgba(248,244,236,0.82); margin-bottom:26px;">Suits, blazers and trousers built for the girlboss era, landing soon. We are not rushing perfection, bestie.</p>
+        <span class="btn btn-ghost-light">Get Notified First →</span>
+      </div>
+    </a>
+  </div>
+</section>
+
+<!-- ============ ABOUT TEASER ============ -->
+<section class="section alt-bg" id="about">
+  <div class="container">
+    <div class="about-section">
+      <div class="about-img-stack">
+        <div id="aboutTeaserImg" style="border-radius:8px; aspect-ratio:4/5; width:100%; overflow:hidden;"></div>
+        <div class="floating-tag">
+          <div class="num">2024</div>
+          <div class="lbl">Est. With Love</div>
+        </div>
+      </div>
+      <div>
+        <span class="eyebrow">Our Story</span>
+        <h2 style="margin:14px 0 20px;">More Than A Label.<br>It's A Feeling.</h2>
+        <p style="color:#5c544a; margin-bottom:28px; max-width:480px;">House of Arshi began as a love letter to the women who refuse to choose between comfort and culture, between tradition and trend. Every piece we make carries a little bit of that intention.</p>
+        <a href="pages/about.html" class="btn btn-primary">Read More</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="container">
+    <div class="footer-grid">
+      <div>
+        <div class="footer-logo"><img src="assets/mark-white.png" alt="House of Arshi" style="height:44px; filter:none;"></div>
+        <p>Fusion, ethnic and everyday fits for the girl who is always a little bit of both. Desi at heart, modern by design.</p>
+        <div class="footer-social">
+          <a href="#" aria-label="Instagram"><svg viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r="0.8" fill="currentColor"/></svg></a>
+          <a href="#" aria-label="Pinterest"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M9 18l2-9M12 14c2 0 4-1.5 4-4.5S14 5 12 5 8 7 8 9.5"/></svg></a>
+          <a href="#" aria-label="WhatsApp"><svg viewBox="0 0 24 24"><path d="M21 11.5a8.5 8.5 0 1 1-4-7.2"/><path d="M21 11.5L13 12l3-7"/></svg></a>
+        </div>
+      </div>
+      <div class="footer-col">
+        <h4>Shop</h4>
+        <a href="pages/fusion-wear.html">Fusion Wear</a>
+        <a href="pages/indo-western.html">Indo Western</a>
+        <a href="pages/sarees.html">Sarees</a>
+        <a href="pages/formals.html">Formals</a>
+      </div>
+      <div class="footer-col">
+        <h4>Company</h4>
+        <a href="pages/about.html">About Us</a>
+        <a href="#">Contact</a>
+        <a href="pages/cart.html">Your Bag</a>
+        <a href="pages/wishlist.html">Wishlist</a>
+      </div>
+      <div class="footer-col">
+        <h4>Stay In The Loop</h4>
+        <p style="margin-bottom:14px;">Drops, discounts and nothing you will want to skip.</p>
+        <form class="footer-newsletter-form" onsubmit="event.preventDefault(); showToast('You are on the list 🤍');">
+          <input type="email" placeholder="Your email" required>
+          <button type="submit">Join</button>
+        </form>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <span>© 2026 House of Arshi. All rights reserved.</span>
+      <span>Designed for the women who do it all.</span>
+    </div>
+  </div>
+</footer>
+
+<div class="toast" id="toast"><svg viewBox="0 0 24 24"><path d="M20 6L9 17l-5-5"/></svg><span></span></div>
+<div class="overlay-scrim" id="overlayScrim"></div>
+
+<div class="drawer" id="cartDrawer">
+  <div class="drawer-header"><h3>Your Bag</h3><button class="drawer-close" onclick="closeDrawers()" aria-label="Close cart"><svg viewBox="0 0 24 24"><path d="M18 6L6 18M6 6l12 12"/></svg></button></div>
+  <div class="drawer-body" id="cartBody"></div>
+  <div class="drawer-footer" id="cartFooter" style="display:none;">
+    <div class="drawer-subtotal"><span>Subtotal</span><span id="cartSubtotal">₹0</span></div>
+    <a href="pages/cart.html" class="btn btn-primary" style="display:block; text-align:center;">View Bag and Checkout</a>
+    <p class="drawer-note">Shipping and taxes calculated at checkout</p>
+  </div>
+</div>
+<div class="drawer" id="wishlistDrawer">
+  <div class="drawer-header"><h3>Your Wishlist</h3><button class="drawer-close" onclick="closeDrawers()" aria-label="Close wishlist"><svg viewBox="0 0 24 24"><path d="M18 6L6 18M6 6l12 12"/></svg></button></div>
+  <div class="drawer-body" id="wishlistBody"></div>
+</div>
+
+<div class="popup-scrim" id="popupScrim"></div>
+<div class="newsletter-popup" id="newsletterPopup">
+  <button class="popup-close" onclick="closeNewsletterPopup()" aria-label="Close popup"><svg viewBox="0 0 24 24"><path d="M18 6L6 18M6 6l12 12"/></svg></button>
+  <div class="np-img" id="newsletterPopupImg"></div>
+  <div class="np-content">
+    <div id="npForm">
+      <span class="eyebrow">Welcome To The House</span>
+      <h3>Get 10% Off<br>Your First Order</h3>
+      <p>Sign up for first dibs on new drops, festive edits and insider discounts.</p>
+      <form class="np-form" onsubmit="submitNewsletter(event)">
+        <input type="email" placeholder="Enter your email" required>
+        <button type="submit" class="btn btn-primary">Claim My 10%</button>
+      </form>
+      <a class="np-skip" onclick="closeNewsletterPopup()">No thanks, I will pay full price</a>
+    </div>
+    <div class="np-success" id="npSuccess">
+      <span class="big-emoji">🤍</span>
+      <h3>You're In!</h3>
+      <p>Check your inbox for your code. Welcome to the House of Arshi family.</p>
+    </div>
+  </div>
+</div>
+
+<div class="product-modal-scrim" id="productModalScrim" onclick="closeProductModal()"></div>
+<div class="product-modal" id="productModal">
+  <button class="modal-close" onclick="closeProductModal()" aria-label="Close product details">
+    <svg viewBox="0 0 24 24"><path d="M18 6L6 18M6 6l12 12"/></svg>
+  </button>
+  <div class="modal-gallery">
+    <div class="modal-main-image" id="modalMainImage"></div>
+    <button class="modal-nav-arrow prev" onclick="modalGoToImage(_modalState.currentImageIndex - 1)" aria-label="Previous image">
+      <svg viewBox="0 0 24 24"><path d="M15 18l-6-6 6-6"/></svg>
+    </button>
+    <button class="modal-nav-arrow next" onclick="modalGoToImage(_modalState.currentImageIndex + 1)" aria-label="Next image">
+      <svg viewBox="0 0 24 24"><path d="M9 18l6-6-6-6"/></svg>
+    </button>
+    <div class="modal-dots" id="modalDots"></div>
+    <div class="modal-thumbs" id="modalThumbs"></div>
+  </div>
+  <div class="modal-info">
+    <span class="modal-tag" id="modalProductTag"></span>
+    <h2 id="modalProductName"></h2>
+    <div class="modal-price" id="modalProductPrice"></div>
+    <div class="modal-section-label">Size</div>
+    <div class="size-row" id="modalSizeRow"></div>
+    <div class="size-warning" id="modalSizeWarning">Please select a size to continue.</div>
+    <div class="modal-section-label">About The Product</div>
+    <p class="modal-text" id="modalAbout"></p>
+    <div class="modal-section-label">Material</div>
+    <p class="modal-text" id="modalMaterial"></p>
+    <div class="modal-section-label">Delivery</div>
+    <p class="modal-text" id="modalDelivery"></p>
+    <div class="modal-actions">
+      <button class="modal-wishlist-btn" id="modalWishlistBtn" aria-label="Add to wishlist">
+        <svg viewBox="0 0 24 24"><path d="M12 21s-7-4.5-9.3-9C1 8.5 2 5 5.3 5c2 0 3.3 1.2 3.7 2 .4-.8 1.7-2 3.7-2C16 5 17 8.5 15.3 12 13 16.5 12 21 12 21z"/></svg>
+      </button>
+      <button class="btn btn-outline" id="modalAddToCartBtn" onclick="modalAddToCart()">Add to Cart</button>
+      <button class="btn btn-primary" onclick="modalBuyNow()">Buy Now</button>
+    </div>
+  </div>
+</div>
+
+<script src="assets/data/products.data.js"></script>
+<script src="assets/data/site-structure.data.js"></script>
+<script src="assets/data/images.data.js"></script>
+<script src="assets/api-client.js"></script>
+<script src="assets/app.js"></script>
+<script src="assets/modal.js"></script>
+<script>
+  // Hero slideshow backgrounds (editable via images.data.js homepage.hero_slide_1/2/3)
+  document.getElementById('heroSlide0').innerHTML = sectionImageHTML('homepage', 'hero_slide_1', 1);
+  document.getElementById('heroSlide1').innerHTML = sectionImageHTML('homepage', 'hero_slide_2', 2);
+  document.getElementById('heroSlide2').innerHTML = sectionImageHTML('homepage', 'hero_slide_3', 4);
+
+  // Sarees banner, Formals teaser, About teaser, newsletter popup images
+  document.getElementById('sareesBannerImg').innerHTML = sectionImageHTML('sarees', 'homepage_banner', 5);
+  document.getElementById('formalsTeaserImg').innerHTML = sectionImageHTML('homepage', 'formals_teaser_banner', 2);
+  document.getElementById('aboutTeaserImg').innerHTML = sectionImageHTML('homepage', 'about_teaser_image', 3);
+  document.getElementById('newsletterPopupImg').innerHTML = sectionImageHTML('homepage', 'newsletter_popup_image', 4);
+
+  // Fusion Wear tiles (4 subsections)
+  function renderHomepageTiles(containerId, sectionKey, imageSection, cardKeyMap) {
+    const container = document.getElementById(containerId);
+    const sec = SITE_STRUCTURE.sections[sectionKey];
+    container.innerHTML = sec.subsections.map((sub, i) => `
+      <a href="pages/${sub.page}" class="showcase-tile">
+        <div id="tile-${sub.key}" style="position:absolute; inset:0;"></div>
+        <div class="showcase-label" style="z-index:3;">
+          <div class="stitle">${sub.title}</div>
+          <div class="sarrow">Shop Now →</div>
+        </div>
+      </a>
+    `).join('');
+    sec.subsections.forEach((sub, i) => {
+      const cardKey = cardKeyMap[sub.key];
+      document.getElementById(`tile-${sub.key}`).innerHTML = sectionImageHTML(imageSection, cardKey, (i % 6) + 1);
+    });
+  }
+
+  renderHomepageTiles('fusionTiles', 'fusion-wear', 'fusion_wear', {
+    'short-kurtis': 'card_short_kurtis',
+    'kurtas': 'card_kurtas',
+    'anarkali-sets': 'card_anarkali_sets',
+    'long-frocks': 'card_long_frocks',
+    'tops': 'card_tops',
+    'nightwear': 'card_nightwear'
+  });
+
+  // Indo Western and Semi Formals are now direct product categories (not
+  // hubs with subsection tiles), so the homepage shows featured products
+  // instead of tiles -- see renderFeaturedGrid below.
+
+  // Sarees featured products (3 items, same treatment as Indo Western used to have)
+  function renderFeaturedGrid(containerId, categoryKey, count) {
+    const container = document.getElementById(containerId);
+    const items = PRODUCTS[categoryKey].slice(0, count);
+    container.innerHTML = items.map((p, i) => `
+      <div class="product-card" data-product-name="${p.name}">
+        <div class="product-img-wrap">
+          ${p.tag ? `<span class="product-tag gold">${p.tag}</span>` : ''}
+          <button class="wishlist-btn" data-wishlist-id="${p.id}" onclick="toggleWishlist('${p.id}', this)" aria-label="Add to wishlist">
+            <svg viewBox="0 0 24 24"><path d="M12 21s-7-4.5-9.3-9C1 8.5 2 5 5.3 5c2 0 3.3 1.2 3.7 2 .4-.8 1.7-2 3.7-2C16 5 17 8.5 15.3 12 13 16.5 12 21 12 21z"/></svg>
+          </button>
+          <a href="javascript:void(0)" onclick="openProductModal('${p.id}')">${productThumbHTML(p, (i % 6) + 1)}</a>
+          <button class="quick-add" onclick="openProductModal('${p.id}')">View Product</button>
+        </div>
+        <div class="product-info">
+          <div class="pname">${p.name}</div>
+          <div class="pprice">${formatINR(p.price)} <span class="strike">${formatINR(p.mrp)}</span></div>
+        </div>
+      </div>
+    `).join('');
+  }
+  renderFeaturedGrid('sareesFeaturedGrid', 'sarees', 3);
+  renderFeaturedGrid('indoFeaturedGrid', 'indo-western', 6);
+  renderFeaturedGrid('semiFormalsFeaturedGrid', 'semi-formals', 6);
+</script>
+</body>
+</html>

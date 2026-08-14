@@ -1,0 +1,274 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Anarkali Suit Sets | House of Arshi</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@500;600;700;800&family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../assets/style.css">
+</head>
+<body>
+
+
+<nav class="navbar">
+  <div class="nav-inner">
+    <div class="nav-left">
+      <button class="burger" onclick="toggleMobileMenu()" aria-label="Open menu">
+        <span></span><span></span><span></span>
+      </button>
+      <a href="../index.html" class="nav-logo">
+        <img src="../assets/mark-black.png" alt="House of Arshi mark" class="mark-img">
+        <div class="logo-text-block">
+          <span class="logo-wordmark">House of Arshi</span>
+          <span class="logo-tagline">Timeless Elegance, Crafted For You</span>
+        </div>
+      </a>
+    </div>
+    <ul class="nav-links">
+      <li><a href="fusion-wear.html">Fusion Wear</a></li>
+      <li><a href="indo-western.html">Indo Western</a></li>
+      <li><a href="semi-formals.html">Semi Formals</a></li>
+      <li><a href="sarees.html">Sarees</a></li>
+      <li><a href="formals.html">Formals</a></li>
+    </ul>
+    <div class="nav-right">
+      <div class="search-box">
+        <svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3"/></svg>
+        <input type="text" id="searchInput" placeholder="Search this collection...">
+      </div>
+      <button class="nav-icon-btn" onclick="openDrawer('wishlistDrawer')" aria-label="Open wishlist">
+        <svg viewBox="0 0 24 24"><path d="M12 21s-7-4.5-9.3-9C1 8.5 2 5 5.3 5c2 0 3.3 1.2 3.7 2 .4-.8 1.7-2 3.7-2C16 5 17 8.5 15.3 12 13 16.5 12 21 12 21z"/></svg>
+        <span class="badge-count" id="wishlistBadge" style="display:none;">0</span>
+      </button>
+      <button class="nav-icon-btn" id="cartIconBtn" onclick="openDrawer('cartDrawer')" aria-label="Open cart">
+        <svg viewBox="0 0 24 24"><path d="M6 6h15l-1.5 9h-12z"/><path d="M6 6L4 3H2"/><circle cx="9" cy="20" r="1"/><circle cx="18" cy="20" r="1"/></svg>
+        <span class="badge-count" id="cartBadge" style="display:none;">0</span>
+      </button>
+      <a href="login.html" id="navAccountLink" class="nav-account-link">Login</a>
+    </div>
+  </div>
+</nav>
+
+
+<div class="marquee">
+  <div class="marquee-track">
+    <span>Free Shipping Above ₹1,999</span>
+    <span>New Drop Every Friday</span>
+    <span>Made For The Way You Actually Live</span>
+    <span>Easy 7-Day Exchange</span>
+    <span>Free Shipping Above ₹1,999</span>
+    <span>New Drop Every Friday</span>
+    <span>Made For The Way You Actually Live</span>
+    <span>Easy 7-Day Exchange</span>
+  </div>
+</div>
+
+
+<div class="page-header has-bg-img theme-fusion">
+  <img src="" alt="" class="page-header-bg" style="display:none;">
+  <div class="page-header-pattern">
+    <img class="motif-1" src="../assets/mark-white.png" alt="" style="object-fit:contain;">
+    <img class="motif-2" src="../assets/mark-white.png" alt="" style="object-fit:contain;">
+  </div>
+  <div class="page-header-content container">
+    <div class="breadcrumb">
+      <a href="../index.html">Home</a> / <a href="fusion-wear.html">Fusion Wear</a> / <span style="color:var(--ivory);">Anarkali Suit Sets</span>
+    </div>
+    <span class="eyebrow">Fusion Wear</span>
+    <h1 style="margin:14px 0 16px;">Anarkali Suit Sets</h1>
+    <p style="max-width:560px; margin:0 auto;">Flowy, festive, full of drama, the good kind. Anarkali sets for when the occasion deserves a twirl.</p>
+  </div>
+</div>
+
+<section class="section tight">
+  <div class="container">
+    <div class="filter-bar">
+      <div class="filter-chips">
+        <button class="filter-chip active">All</button>
+        <button class="filter-chip">Bestseller</button>
+        <button class="filter-chip">New</button>
+        <button class="filter-chip">Under ₹1,500</button>
+      </div>
+      <span class="result-count" id="resultCount">10 items</span>
+    </div>
+
+    <div class="product-grid" id="productGrid"></div>
+  </div>
+</section>
+
+
+<footer>
+  <div class="container">
+    <div class="footer-grid">
+      <div>
+        <div class="footer-logo"><img src="../assets/mark-white.png" alt="House of Arshi" style="height:44px; filter:none;"></div>
+        <p>Fusion, ethnic and everyday fits for the girl who is always a little bit of both. Desi at heart, modern by design.</p>
+        <div class="footer-social">
+          <a href="#" aria-label="Instagram"><svg viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r="0.8" fill="currentColor"/></svg></a>
+          <a href="#" aria-label="Pinterest"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M9 18l2-9M12 14c2 0 4-1.5 4-4.5S14 5 12 5 8 7 8 9.5"/></svg></a>
+          <a href="#" aria-label="WhatsApp"><svg viewBox="0 0 24 24"><path d="M21 11.5a8.5 8.5 0 1 1-4-7.2"/><path d="M21 11.5L13 12l3-7"/></svg></a>
+        </div>
+      </div>
+      <div class="footer-col">
+        <h4>Shop</h4>
+        <a href="fusion-wear.html">Fusion Wear</a>
+        <a href="indo-western.html">Indo Western</a>
+        <a href="semi-formals.html">Semi Formals</a>
+        <a href="sarees.html">Sarees</a>
+        <a href="formals.html">Formals</a>
+      </div>
+      <div class="footer-col">
+        <h4>Company</h4>
+        <a href="about.html">About Us</a>
+        <a href="#">Contact</a>
+        <a href="cart.html">Your Bag</a>
+        <a href="wishlist.html">Wishlist</a>
+      </div>
+      <div class="footer-col">
+        <h4>Stay In The Loop</h4>
+        <p style="margin-bottom:14px;">Drops, discounts and nothing you will want to skip.</p>
+        <form class="footer-newsletter-form" onsubmit="event.preventDefault(); showToast('You are on the list 🤍');">
+          <input type="email" placeholder="Your email" required>
+          <button type="submit">Join</button>
+        </form>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <span>© 2026 House of Arshi. All rights reserved.</span>
+      <span>Designed for the women who do it all.</span>
+    </div>
+  </div>
+</footer>
+
+
+<div class="toast" id="toast"><svg viewBox="0 0 24 24"><path d="M20 6L9 17l-5-5"/></svg><span></span></div>
+
+
+<div class="overlay-scrim" id="overlayScrim"></div>
+
+<div class="drawer" id="cartDrawer">
+  <div class="drawer-header">
+    <h3>Your Bag</h3>
+    <button class="drawer-close" onclick="closeDrawers()" aria-label="Close cart"><svg viewBox="0 0 24 24"><path d="M18 6L6 18M6 6l12 12"/></svg></button>
+  </div>
+  <div class="drawer-body" id="cartBody"></div>
+  <div class="drawer-footer" id="cartFooter" style="display:none;">
+    <div class="drawer-subtotal"><span>Subtotal</span><span id="cartSubtotal">₹0</span></div>
+    <a href="cart.html" class="btn btn-primary" id="goToCartBtn" style="display:block; text-align:center;">View Bag and Checkout</a>
+    <p class="drawer-note">Shipping and taxes calculated at checkout</p>
+  </div>
+</div>
+
+<div class="drawer" id="wishlistDrawer">
+  <div class="drawer-header">
+    <h3>Your Wishlist</h3>
+    <button class="drawer-close" onclick="closeDrawers()" aria-label="Close wishlist"><svg viewBox="0 0 24 24"><path d="M18 6L6 18M6 6l12 12"/></svg></button>
+  </div>
+  <div class="drawer-body" id="wishlistBody"></div>
+</div>
+
+
+<div class="product-modal-scrim" id="productModalScrim" onclick="closeProductModal()"></div>
+<div class="product-modal" id="productModal">
+  <button class="modal-close" onclick="closeProductModal()" aria-label="Close product details">
+    <svg viewBox="0 0 24 24"><path d="M18 6L6 18M6 6l12 12"/></svg>
+  </button>
+  <div class="modal-gallery">
+    <div class="modal-main-image" id="modalMainImage"></div>
+    <button class="modal-nav-arrow prev" onclick="modalGoToImage(_modalState.currentImageIndex - 1)" aria-label="Previous image">
+      <svg viewBox="0 0 24 24"><path d="M15 18l-6-6 6-6"/></svg>
+    </button>
+    <button class="modal-nav-arrow next" onclick="modalGoToImage(_modalState.currentImageIndex + 1)" aria-label="Next image">
+      <svg viewBox="0 0 24 24"><path d="M9 18l6-6-6-6"/></svg>
+    </button>
+    <div class="modal-dots" id="modalDots"></div>
+    <div class="modal-thumbs" id="modalThumbs"></div>
+  </div>
+  <div class="modal-info">
+    <span class="modal-tag" id="modalProductTag"></span>
+    <h2 id="modalProductName"></h2>
+    <div class="modal-price" id="modalProductPrice"></div>
+
+    <div class="modal-section-label">Size</div>
+    <div class="size-row" id="modalSizeRow"></div>
+    <div class="size-warning" id="modalSizeWarning">Please select a size to continue.</div>
+
+    <div class="modal-section-label">About The Product</div>
+    <p class="modal-text" id="modalAbout"></p>
+
+    <div class="modal-section-label">Material</div>
+    <p class="modal-text" id="modalMaterial"></p>
+
+    <div class="modal-section-label">Delivery</div>
+    <p class="modal-text" id="modalDelivery"></p>
+
+    <div class="modal-actions">
+      <button class="modal-wishlist-btn" id="modalWishlistBtn" aria-label="Add to wishlist">
+        <svg viewBox="0 0 24 24"><path d="M12 21s-7-4.5-9.3-9C1 8.5 2 5 5.3 5c2 0 3.3 1.2 3.7 2 .4-.8 1.7-2 3.7-2C16 5 17 8.5 15.3 12 13 16.5 12 21 12 21z"/></svg>
+      </button>
+      <button class="btn btn-outline" id="modalAddToCartBtn" onclick="modalAddToCart()">Add to Cart</button>
+      <button class="btn btn-primary" onclick="modalBuyNow()">Buy Now</button>
+    </div>
+  </div>
+</div>
+
+
+
+<script src="../assets/data/products.data.js"></script>
+<script src="../assets/data/site-structure.data.js"></script>
+<script src="../assets/data/images.data.js"></script>
+<script src="../assets/api-client.js"></script>
+<script src="../assets/app.js"></script>
+<script src="../assets/modal.js"></script>
+
+<script>
+  function renderSubsectionGrid() {
+    const container = document.getElementById('productGrid');
+    const items = PRODUCTS['anarkali-sets'];
+    container.innerHTML = items.map((p, i) => `
+      <div class="product-card" data-product-name="${p.name}">
+        <div class="product-img-wrap">
+          ${p.tag ? `<span class="product-tag gold">${p.tag}</span>` : ''}
+          <button class="wishlist-btn" data-wishlist-id="${p.id}" onclick="toggleWishlist('${p.id}', this); event.stopPropagation();" aria-label="Add to wishlist">
+            <svg viewBox="0 0 24 24"><path d="M12 21s-7-4.5-9.3-9C1 8.5 2 5 5.3 5c2 0 3.3 1.2 3.7 2 .4-.8 1.7-2 3.7-2C16 5 17 8.5 15.3 12 13 16.5 12 21 12 21z"/></svg>
+          </button>
+          <a href="javascript:void(0)" onclick="openProductModal('${p.id}')">${productThumbHTML(p, (i % 6) + 1)}</a>
+          <button class="quick-add" onclick="openProductModal('${p.id}')">View Product</button>
+        </div>
+        <div class="product-info">
+          <div class="pname">${p.name}</div>
+          <div class="pprice">${formatINR(p.price)} <span class="strike">${formatINR(p.mrp)}</span></div>
+        </div>
+      </div>
+    `).join('');
+    document.getElementById('resultCount').textContent = `${items.length} items`;
+  }
+  renderSubsectionGrid();
+
+  document.querySelectorAll('.filter-chip').forEach(chip => {
+    chip.addEventListener('click', () => {
+      document.querySelectorAll('.filter-chip').forEach(c => c.classList.remove('active'));
+      chip.classList.add('active');
+      const label = chip.textContent.trim();
+      const cards = document.querySelectorAll('#productGrid .product-card');
+      let visible = 0;
+      cards.forEach(card => {
+        let show = true;
+        if (label === 'Bestseller' || label === 'New') {
+          const tag = card.querySelector('.product-tag');
+          show = tag && tag.textContent.trim() === label;
+        } else if (label === 'Under ₹1,500') {
+          const priceText = card.querySelector('.pprice').childNodes[0].textContent;
+          const price = parseInt(priceText.replace(/[^0-9]/g, ''));
+          show = price < 1500;
+        }
+        card.style.display = show ? '' : 'none';
+        if (show) visible++;
+      });
+      document.getElementById('resultCount').textContent = `${visible} item${visible !== 1 ? 's' : ''}`;
+    });
+  });
+</script>
+</body>
+</html>

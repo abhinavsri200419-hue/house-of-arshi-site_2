@@ -1,0 +1,4 @@
+Put your product photos in this folder.
+
+See docs/DEVELOPER_GUIDE.md (Part 1) for naming suggestions and how to
+wire a photo into a specific product in assets/data/products.data.js.

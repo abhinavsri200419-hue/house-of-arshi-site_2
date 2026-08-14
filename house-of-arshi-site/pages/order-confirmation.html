@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Order Confirmed | House of Arshi</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@500;600;700;800&family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../assets/style.css">
+</head>
+<body>
+
+<nav class="navbar">
+  <div class="nav-inner">
+    <div class="nav-left">
+      <button class="burger" onclick="toggleMobileMenu()" aria-label="Open menu">
+        <span></span><span></span><span></span>
+      </button>
+      <a href="../index.html" class="nav-logo">
+        <img src="../assets/mark-black.png" alt="House of Arshi mark" class="mark-img">
+        <div class="logo-text-block">
+          <span class="logo-wordmark">House of Arshi</span>
+          <span class="logo-tagline">Timeless Elegance, Crafted For You</span>
+        </div>
+      </a>
+    </div>
+    <ul class="nav-links">
+      <li><a href="fusion-wear.html">Fusion Wear</a></li>
+      <li><a href="indo-western.html">Indo Western</a></li>
+      <li><a href="semi-formals.html">Semi Formals</a></li>
+      <li><a href="sarees.html">Sarees</a></li>
+      <li><a href="formals.html">Formals</a></li>
+    </ul>
+    <div class="nav-right">
+      <button class="nav-icon-btn" onclick="openDrawer('wishlistDrawer')" aria-label="Open wishlist">
+        <svg viewBox="0 0 24 24"><path d="M12 21s-7-4.5-9.3-9C1 8.5 2 5 5.3 5c2 0 3.3 1.2 3.7 2 .4-.8 1.7-2 3.7-2C16 5 17 8.5 15.3 12 13 16.5 12 21 12 21z"/></svg>
+        <span class="badge-count" id="wishlistBadge" style="display:none;">0</span>
+      </button>
+      <button class="nav-icon-btn" id="cartIconBtn" onclick="openDrawer('cartDrawer')" aria-label="Open cart">
+        <svg viewBox="0 0 24 24"><path d="M6 6h15l-1.5 9h-12z"/><path d="M6 6L4 3H2"/><circle cx="9" cy="20" r="1"/><circle cx="18" cy="20" r="1"/></svg>
+        <span class="badge-count" id="cartBadge" style="display:none;">0</span>
+      </button>
+      <a href="login.html" id="navAccountLink" class="nav-account-link">Login</a>
+    </div>
+  </div>
+</nav>
+
+<section class="section">
+  <div class="container">
+    <div class="confirmation-wrap">
+      <div class="confirmation-check">
+        <svg viewBox="0 0 24 24" fill="none"><path d="M20 6L9 17l-5-5"/></svg>
+      </div>
+      <span class="eyebrow">Order Placed</span>
+      <h1 style="margin-top:10px;">Thank You, You're All Set</h1>
+      <div class="confirmation-order-id" id="confirmOrderId">Order #</div>
+      <p style="color:#5c544a; margin-bottom:8px;">A confirmation email is on its way to <span id="confirmEmail" style="font-weight:600;"></span>.</p>
+
+      <div class="confirmation-details" id="confirmDetails"></div>
+
+      <div class="confirmation-actions">
+        <a href="../index.html" class="btn btn-outline">Continue Shopping</a>
+        <a href="fusion-wear.html" class="btn btn-primary">Explore New Arrivals</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="container">
+    <div class="footer-grid">
+      <div>
+        <div class="footer-logo"><img src="../assets/mark-white.png" alt="House of Arshi" style="height:44px; filter:none;"></div>
+        <p>Fusion, ethnic and everyday fits for the girl who is always a little bit of both. Desi at heart, modern by design.</p>
+      </div>
+      <div class="footer-col">
+        <h4>Shop</h4>
+        <a href="fusion-wear.html">Fusion Wear</a>
+        <a href="indo-western.html">Indo Western</a>
+        <a href="semi-formals.html">Semi Formals</a>
+        <a href="sarees.html">Sarees</a>
+        <a href="formals.html">Formals</a>
+      </div>
+      <div class="footer-col">
+        <h4>Company</h4>
+        <a href="about.html">About Us</a>
+        <a href="#">Contact</a>
+        <a href="cart.html">Your Bag</a>
+        <a href="wishlist.html">Wishlist</a>
+      </div>
+      <div class="footer-col">
+        <h4>Stay In The Loop</h4>
+        <p style="margin-bottom:14px;">Drops, discounts and nothing you will want to skip.</p>
+        <form class="footer-newsletter-form" onsubmit="event.preventDefault(); showToast('You are on the list 🤍');">
+          <input type="email" placeholder="Your email" required>
+          <button type="submit">Join</button>
+        </form>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <span>© 2026 House of Arshi. All rights reserved.</span>
+      <span>Designed for the women who do it all.</span>
+    </div>
+  </div>
+</footer>
+
+<div class="toast" id="toast"><svg viewBox="0 0 24 24"><path d="M20 6L9 17l-5-5"/></svg><span></span></div>
+<div class="overlay-scrim" id="overlayScrim"></div>
+
+<div class="drawer" id="cartDrawer">
+  <div class="drawer-header"><h3>Your Bag</h3><button class="drawer-close" onclick="closeDrawers()" aria-label="Close cart"><svg viewBox="0 0 24 24"><path d="M18 6L6 18M6 6l12 12"/></svg></button></div>
+  <div class="drawer-body" id="cartBody"></div>
+  <div class="drawer-footer" id="cartFooter" style="display:none;">
+    <div class="drawer-subtotal"><span>Subtotal</span><span id="cartSubtotal">₹0</span></div>
+    <a href="cart.html" class="btn btn-primary" style="display:block; text-align:center;">View Bag and Checkout</a>
+    <p class="drawer-note">Shipping and taxes calculated at checkout</p>
+  </div>
+</div>
+<div class="drawer" id="wishlistDrawer">
+  <div class="drawer-header"><h3>Your Wishlist</h3><button class="drawer-close" onclick="closeDrawers()" aria-label="Close wishlist"><svg viewBox="0 0 24 24"><path d="M18 6L6 18M6 6l12 12"/></svg></button></div>
+  <div class="drawer-body" id="wishlistBody"></div>
+</div>
+
+<script src="../assets/data/products.data.js"></script>
+<script src="../assets/data/site-structure.data.js"></script>
+<script src="../assets/data/images.data.js"></script>
+<script src="../assets/api-client.js"></script>
+<script src="../assets/app.js"></script>
+<script src="../assets/modal.js"></script>
+<script>
+  (function renderConfirmation() {
+    const raw = sessionStorage.getItem('hoa_last_order');
+    if (!raw) {
+      // No order on record, someone navigated here directly, send them home
+      window.location.href = '../index.html';
+      return;
+    }
+    const order = JSON.parse(raw);
+
+    document.getElementById('confirmOrderId').textContent = 'Order #' + order.orderId;
+    document.getElementById('confirmEmail').textContent = order.email;
+
+    const itemLines = order.items.map(item =>
+      `<div class="cd-row"><span>${item.name} (Size ${item.size}, Qty ${item.qty})</span><span>${formatINR(item.price * item.qty)}</span></div>`
+    ).join('');
+
+    document.getElementById('confirmDetails').innerHTML = `
+      ${itemLines}
+      <div class="cd-row"><span>Payment Method</span><span>${order.paymentMethod}</span></div>
+      <div class="cd-row" style="font-weight:700;"><span>Total Paid</span><span>${formatINR(order.subtotal)}</span></div>
+    `;
+
+    // Clear the stored order so refreshing or revisiting this page directly
+    // later does not show stale order data
+    sessionStorage.removeItem('hoa_last_order');
+  })();
+</script>
+</body>
+</html>

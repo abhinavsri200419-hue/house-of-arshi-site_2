@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Log In | House of Arshi</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@500;600;700;800&family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../assets/style.css">
+<style>
+  body.auth-body {
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--ivory);
+    padding: 24px;
+  }
+  .auth-card {
+    width: 100%;
+    max-width: 420px;
+    background: #fff;
+    border: 1px solid var(--line);
+    border-radius: 12px;
+    padding: 40px 36px;
+    box-shadow: 0 20px 60px rgba(22,19,16,0.08);
+  }
+  .auth-logo { text-align: center; margin-bottom: 28px; }
+  .auth-logo img { height: 48px; margin-bottom: 10px; }
+  .auth-logo .logo-wordmark { display: block; font-family: var(--font-display); font-size: 22px; font-weight: 700; color: var(--black); }
+  .auth-logo .logo-tagline { display: block; font-size: 12px; letter-spacing: 0.1em; color: var(--gold); margin-top: 4px; }
+  .auth-title { font-family: var(--font-display); font-size: 26px; margin: 0 0 6px; text-align: center; color: var(--black); }
+  .auth-subtitle { text-align: center; font-size: 14px; color: #6b6560; margin: 0 0 28px; }
+  .auth-field { margin-bottom: 18px; }
+  .auth-field label { display: block; font-size: 13px; font-weight: 500; color: var(--black-soft); margin-bottom: 6px; }
+  .auth-field input {
+    width: 100%;
+    padding: 12px 14px;
+    border: 1px solid var(--line);
+    border-radius: 8px;
+    font-family: var(--font-body);
+    font-size: 15px;
+    background: var(--ivory);
+  }
+  .auth-field input:focus { outline: none; border-color: var(--gold); }
+  .auth-submit {
+    width: 100%;
+    padding: 13px;
+    border: none;
+    border-radius: 8px;
+    background: var(--black);
+    color: #fff;
+    font-family: var(--font-body);
+    font-size: 15px;
+    font-weight: 600;
+    cursor: pointer;
+    margin-top: 8px;
+  }
+  .auth-submit:disabled { opacity: 0.6; cursor: not-allowed; }
+  .auth-submit:hover:not(:disabled) { background: var(--maroon-deep); }
+  .auth-error {
+    background: #FCEBEA;
+    color: var(--maroon-deep);
+    border: 1px solid var(--blush-deep);
+    border-radius: 8px;
+    padding: 10px 14px;
+    font-size: 13px;
+    margin-bottom: 18px;
+    display: none;
+  }
+  .auth-switch { text-align: center; margin-top: 22px; font-size: 14px; color: #6b6560; }
+  .auth-switch a { color: var(--gold); font-weight: 600; text-decoration: none; }
+  .auth-switch a:hover { text-decoration: underline; }
+</style>
+</head>
+<body class="auth-body">
+
+<div class="auth-card">
+  <div class="auth-logo">
+    <img src="../assets/mark-black.png" alt="House of Arshi mark">
+    <span class="logo-wordmark">House of Arshi</span>
+    <span class="logo-tagline">TIMELESS ELEGANCE, CRAFTED FOR YOU</span>
+  </div>
+
+  <h1 class="auth-title">Welcome back</h1>
+  <p class="auth-subtitle">Log in to shop, save favourites, and track orders.</p>
+
+  <div class="auth-error" id="loginError"></div>
+
+  <form id="loginForm" novalidate>
+    <div class="auth-field">
+      <label for="loginEmail">Email</label>
+      <input type="email" id="loginEmail" autocomplete="email" required>
+    </div>
+    <div class="auth-field">
+      <label for="loginPassword">Password</label>
+      <input type="password" id="loginPassword" autocomplete="current-password" required>
+    </div>
+    <button type="submit" class="auth-submit" id="loginSubmitBtn">Log In</button>
+  </form>
+
+  <p class="auth-switch">New to House of Arshi? <a href="signup.html">Create an account</a></p>
+</div>
+
+<script src="../assets/api-client.js"></script>
+<script>
+  const form = document.getElementById('loginForm');
+  const errorBox = document.getElementById('loginError');
+  const submitBtn = document.getElementById('loginSubmitBtn');
+
+  // Already logged in? Skip straight to the homepage.
+  if (getToken()) {
+    window.location.replace('../index.html');
+  }
+
+  form.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    errorBox.style.display = 'none';
+    submitBtn.disabled = true;
+    submitBtn.textContent = 'Logging in...';
+
+    const email = document.getElementById('loginEmail').value.trim();
+    const password = document.getElementById('loginPassword').value;
+
+    try {
+      await AuthAPI.login(email, password);
+      submitBtn.textContent = 'Logging in...';
+      await completeLoginRedirect('../index.html');
+    } catch (err) {
+      errorBox.textContent = err.message || 'Login failed. Please try again.';
+      errorBox.style.display = 'block';
+      submitBtn.disabled = false;
+      submitBtn.textContent = 'Log In';
+    }
+  });
+</script>
+</body>
+</html>
