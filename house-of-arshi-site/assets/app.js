@@ -814,12 +814,81 @@ function toggleMobileMenu() {
   document.getElementById('mobileMenu')?.classList.toggle('active');
 }
 
+// ---------- Footer legal accordion (FAQ / Privacy / Terms) ----------
+function initFooterLegal() {
+  const panelsWrap = document.getElementById('footerLegalPanels');
+  const linkEls = document.querySelectorAll('.footer-legal-links a[data-legal]');
+  if (!panelsWrap || linkEls.length === 0) return;
+
+  const sources = (typeof FOOTER_LEGAL === 'object' && FOOTER_LEGAL) || {};
+
+  function closeAll() {
+    panelsWrap.hidden = true;
+    panelsWrap.querySelectorAll('.flp-panel').forEach(p => p.classList.remove('is-open'));
+    linkEls.forEach(a => a.classList.remove('is-active'));
+  }
+
+  function openPanel(kind) {
+    const panel = panelsWrap.querySelector(`.flp-panel[data-panel="${kind}"]`);
+    if (!panel) return;
+    const body = panel.querySelector('.flp-body');
+    if (body && !body.dataset.filled && sources[kind]) {
+      body.innerHTML = sources[kind];
+      body.dataset.filled = 'true';
+    }
+    // close any other open panel first
+    panelsWrap.querySelectorAll('.flp-panel').forEach(p => p.classList.remove('is-open'));
+    linkEls.forEach(a => a.classList.remove('is-active'));
+    panel.classList.add('is-open');
+    panelsWrap.hidden = false;
+    linkEls.forEach(a => {
+      if (a.getAttribute('data-legal') === kind) a.classList.add('is-active');
+    });
+    // smooth scroll the panel into view
+    setTimeout(() => {
+      panel.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }, 50);
+  }
+
+  linkEls.forEach(a => {
+    a.addEventListener('click', (e) => {
+      e.preventDefault();
+      const kind = a.getAttribute('data-legal');
+      const panel = panelsWrap.querySelector(`.flp-panel[data-panel="${kind}"]`);
+      const isOpen = panel && panel.classList.contains('is-open');
+      if (isOpen) {
+        closeAll();
+      } else {
+        openPanel(kind);
+      }
+      // update URL hash without jump
+      if (history.replaceState) {
+        history.replaceState(null, '', isOpen ? ' ' : `#footer-legal-${kind}`);
+      }
+    });
+  });
+
+  panelsWrap.querySelectorAll('.flp-close').forEach(btn => {
+    btn.addEventListener('click', () => {
+      closeAll();
+      if (history.replaceState) history.replaceState(null, '', ' ');
+    });
+  });
+
+  // Open from URL hash on initial load
+  const initialHash = (window.location.hash || '').replace('#footer-legal-', '');
+  if (initialHash && sources[initialHash]) {
+    openPanel(initialHash);
+  }
+}
+
 // ---------- Init on load ----------
 document.addEventListener('DOMContentLoaded', () => {
   initAccountNav();
   initSearch();
   initNewsletterPopup();
   initHeroSlideshow();
+  initFooterLegal();
 
   document.getElementById('overlayScrim')?.addEventListener('click', closeDrawers);
   document.getElementById('popupScrim')?.addEventListener('click', closeNewsletterPopup);
