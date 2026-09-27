@@ -27,6 +27,7 @@ HUB_TEMPLATE = """{head}
 {navbar}
 {marquee}
 
+<main id="main">
 <div class="page-header has-bg-img theme-{theme}">
   <div class="page-header-pattern">
     <img class="motif-1" src="../assets/mark-white.png" alt="" style="object-fit:contain;">
@@ -51,6 +52,7 @@ HUB_TEMPLATE = """{head}
     </div>
   </div>
 </section>
+</main>
 
 {footer}
 {toast}
@@ -92,7 +94,7 @@ for sec_key, filename in HUB_FILES.items():
         )
         img_section, img_key = CARD_IMAGE_KEY[sub['key']]
         tile_init_scripts.append(
-            f"document.getElementById('tile-{sub['key']}').innerHTML = sectionImageHTML('{img_section}', '{img_key}', {(len(tile_init_scripts) % 6) + 1});"
+            f"document.getElementById('tile-{sub['key']}').innerHTML = sectionImageHTML('{img_section}', '{img_key}', {(len(tile_init_scripts) % 6) + 1}, 'large', {{ sizes: '(max-width: 980px) 50vw, 25vw' }});"
         )
 
     html = HUB_TEMPLATE.format(

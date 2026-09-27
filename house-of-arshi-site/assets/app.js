@@ -1,6 +1,6 @@
 /* ============================================
    HOUSE OF ARSHI, Core App Logic
-   Cart, Wishlist, Search, Image Helpers
+   Cart, Wishlist, Search, Mobile Menu, Image Helpers
    Cart/wishlist are now backed by the FastAPI + Supabase backend via
    api-client.js -- these local arrays are just an in-memory mirror of
    what's on the server, refreshed after every change.
@@ -66,6 +66,14 @@ function saveGuestWishlist() {
   localStorage.setItem(GUEST_WISHLIST_KEY, JSON.stringify(wishlist));
 }
 
+// Storage that never throws (private browsing and blocked storage can throw)
+function storageGet(key) {
+  try { return localStorage.getItem(key); } catch { return null; }
+}
+function storageSet(key, value) {
+  try { localStorage.setItem(key, value); } catch { /* ignore */ }
+}
+
 async function loadCart() {
   if (getToken()) {
     try {
@@ -97,31 +105,45 @@ async function loadWishlist() {
   renderWishlist();
   renderWishlistPage();
   updateBadges();
+  syncWishlistButtons();
+}
+
+// Marks every heart button whose product is in the wishlist
+function syncWishlistButtons() {
   document.querySelectorAll('[data-wishlist-id]').forEach(el => {
-    const id = el.getAttribute('data-wishlist-id');
-    el.classList.toggle('active', wishlist.some(w => w.id === id));
+    const saved = wishlist.some(w => w.id === el.getAttribute('data-wishlist-id'));
+    el.classList.toggle('active', saved);
+    el.setAttribute('aria-pressed', saved ? 'true' : 'false');
   });
 }
 
 // ---------- Account nav ----------
 async function initAccountNav() {
   const link = document.getElementById('navAccountLink');
-  if (!link) return;
+  const menuLink = document.getElementById('mmAccount');
   if (!getToken()) {
-    link.textContent = 'Login';
+    if (link) link.textContent = 'Login';
     return;
   }
   try {
     const customer = await AuthAPI.me();
     const firstName = customer.name.split(' ')[0];
-    link.textContent = `Hi, ${firstName}`;
-    link.href = 'javascript:void(0)';
-    link.onclick = (e) => {
+    const logout = (e) => {
       e.preventDefault();
       if (confirm('Log out of House of Arshi?')) {
         AuthAPI.logout();
       }
     };
+    if (link) {
+      link.textContent = `Hi, ${firstName}`;
+      link.href = 'javascript:void(0)';
+      link.onclick = logout;
+    }
+    if (menuLink) {
+      menuLink.textContent = `Hi, ${firstName} · Log out`;
+      menuLink.href = '#';
+      menuLink.onclick = logout;
+    }
   } catch (err) {
     // apiRequest already redirects to login on 401
   }
@@ -130,6 +152,21 @@ async function initAccountNav() {
 // ---------- Utility ----------
 function formatINR(n) {
   return '₹' + n.toLocaleString('en-IN');
+}
+
+function escapeHTML(s) {
+  return String(s).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+}
+
+function isInPagesFolder() {
+  return window.location.pathname.includes('/pages/');
+}
+
+// Turns a path written from the site root ("pages/cart.html", "index.html")
+// into one that works from whichever page is currently open.
+function sitePath(path) {
+  if (!isInPagesFolder()) return path;
+  return path.startsWith('pages/') ? path.slice('pages/'.length) : '../' + path;
 }
 
 // Searches every subsection array inside PRODUCTS for a matching id.
@@ -142,6 +179,69 @@ function findProductById(id) {
   return null;
 }
 
+// Shareable link to a product: its category page, which opens the product
+// popup automatically when the address ends in #p-<id>.
+function productUrl(id) {
+  const result = findProductById(id);
+  const page = result ? `pages/${result.subsectionKey}.html` : 'index.html';
+  return `${sitePath(page)}#p-${id}`;
+}
+
+// Opens the product popup in place; ctrl/cmd-click still opens a new tab.
+function openProductFromLink(e, id) {
+  if (e && (e.metaKey || e.ctrlKey || e.shiftKey || e.button === 1)) return true;
+  if (e) e.preventDefault();
+  openProductModal(id);
+  return false;
+}
+
+// ---------- Scroll lock (drawers, menu, product popup) ----------
+// body { overflow: hidden } is ignored by iPhone Safari, so the page is pinned
+// in place instead and the scroll position restored afterwards.
+let _scrollLocks = 0;
+let _lockedScrollY = 0;
+function lockScroll() {
+  if (_scrollLocks++ > 0) return;
+  _lockedScrollY = window.scrollY;
+  const s = document.body.style;
+  s.position = 'fixed';
+  s.top = `-${_lockedScrollY}px`;
+  s.left = '0';
+  s.right = '0';
+  s.width = '100%';
+}
+function unlockScroll() {
+  if (_scrollLocks === 0 || --_scrollLocks > 0) return;
+  const s = document.body.style;
+  s.position = '';
+  s.top = '';
+  s.left = '';
+  s.right = '';
+  s.width = '';
+  window.scrollTo({ top: _lockedScrollY, left: 0, behavior: 'instant' });
+}
+
+// Keeps keyboard focus inside an open dialog
+function trapFocus(container, e) {
+  const focusables = [...container.querySelectorAll('a[href], button:not([disabled]), input:not([disabled]), select, textarea, [tabindex]:not([tabindex="-1"])')]
+    .filter(el => el.getClientRects().length && getComputedStyle(el).visibility !== 'hidden');
+  if (!focusables.length) return;
+  const first = focusables[0];
+  const last = focusables[focusables.length - 1];
+  if (!container.contains(document.activeElement)) {
+    e.preventDefault();
+    first.focus();
+  } else if (e.shiftKey && document.activeElement === first) {
+    e.preventDefault();
+    last.focus();
+  } else if (!e.shiftKey && document.activeElement === last) {
+    e.preventDefault();
+    first.focus();
+  }
+}
+
+// ---------- Images ----------
+
 // Looks up an editable image from IMAGES by dotted path, e.g.
 // getImage('homepage', 'hero_slide_1') -> { src, alt } or null if not configured
 function getImage(section, key) {
@@ -150,15 +250,15 @@ function getImage(section, key) {
   return entry.src ? entry : null;
 }
 
-// Renders either a real <img> (if src is set) or a designed placeholder,
+// Renders either a real image (if src is set) or a designed placeholder,
 // for section/banner images from images.data.js. sizeLabel controls the
 // placeholder icon size ('large' default, 'small' for compact spots).
-function sectionImageHTML(section, key, swatchNum = 1, sizeLabel = 'large') {
+// opts are passed to responsiveImageHTML (sizes, priority, eager, artDirection).
+function sectionImageHTML(section, key, swatchNum = 1, sizeLabel = 'large', opts = {}) {
   const img = getImage(section, key);
-  const isInPagesFolder = window.location.pathname.includes('/pages/');
-  const markPath = isInPagesFolder ? '../assets/mark-white.png' : 'assets/mark-white.png';
+  const markPath = isInPagesFolder() ? '../assets/mark-white.png' : 'assets/mark-white.png';
   if (img) {
-    return imgTagWithFallback(img.src, img.alt, 'width:100%; height:100%; object-fit:cover;');
+    return responsiveImageHTML(img.src, img.alt, { sizes: '100vw', ...opts });
   }
   const iconSize = sizeLabel === 'small' ? '32px' : '48px';
   return `
@@ -179,10 +279,9 @@ function resolveImgPath(path) {
   // If someone already wrote a full path (starts with assets/, ../, http, or /),
   // leave it alone rather than double-prefixing.
   if (/^(https?:)?\/\//.test(path) || path.startsWith('../') || path.startsWith('assets/') || path.startsWith('/')) {
-    return window.location.pathname.includes('/pages/') && path.startsWith('assets/') ? '../' + path : path;
+    return isInPagesFolder() && path.startsWith('assets/') ? '../' + path : path;
   }
-  const isInPagesFolder = window.location.pathname.includes('/pages/');
-  return (isInPagesFolder ? '../assets/img/' : 'assets/img/') + path;
+  return (isInPagesFolder() ? '../assets/img/' : 'assets/img/') + path;
 }
 
 // Builds an <img> tag that automatically tries assets/img/sections/ and
@@ -191,28 +290,63 @@ function resolveImgPath(path) {
 // folder a particular photo belongs in. If the path already includes a
 // folder (like "products/sk1.jpg"), this is skipped and the path is used
 // exactly as given.
-function imgTagWithFallback(path, alt, styleAttr) {
+function imgTagWithFallback(path, alt, styleAttr, extraAttrs = '') {
   const resolved = resolveImgPath(path);
   const hasExplicitFolder = path.includes('/');
   if (hasExplicitFolder) {
-    return `<img src="${resolved}" alt="${alt}" style="${styleAttr}">`;
+    return `<img src="${resolved}" alt="${alt}" style="${styleAttr}"${extraAttrs}>`;
   }
   // No folder specified, try sections/ first, then fall back to products/
   // if that 404s, using onerror with a one-time guard so it cannot loop.
-  const isInPagesFolder = window.location.pathname.includes('/pages/');
-  const base = isInPagesFolder ? '../assets/img/' : 'assets/img/';
+  const base = isInPagesFolder() ? '../assets/img/' : 'assets/img/';
   const sectionsGuess = base + 'sections/' + path;
   const productsGuess = base + 'products/' + path;
-  return `<img src="${sectionsGuess}" alt="${alt}" style="${styleAttr}" onerror="if(!this.dataset.fallbackTried){this.dataset.fallbackTried='1'; this.src='${productsGuess}';}">`;
+  return `<img src="${sectionsGuess}" alt="${alt}" style="${styleAttr}"${extraAttrs} onerror="if(!this.dataset.fallbackTried){this.dataset.fallbackTried='1'; this.src='${productsGuess}';}">`;
+}
+
+// Optimised copies made by dev-tools/optimize_images.py, listed in
+// assets/data/image-variants.data.js. Returns null for photos that haven't
+// been optimised yet (they are then shown as-is).
+function imageVariants(path) {
+  if (typeof IMAGE_VARIANTS !== 'object' || !IMAGE_VARIANTS || !path) return null;
+  const key = path.replace(/^(\.\.\/)?(assets\/)?img\//, '');
+  if (IMAGE_VARIANTS[key]) return IMAGE_VARIANTS[key];
+  if (!key.includes('/')) return IMAGE_VARIANTS['sections/' + key] || IMAGE_VARIANTS['products/' + key] || null;
+  return null;
+}
+
+// Builds a responsive image: small WebP files for phones, bigger ones for
+// large screens, a JPEG for old browsers, and (for hero banners) a
+// portrait crop on phones. Falls back to a plain <img> when no optimised
+// copies exist.
+//   opts.sizes         how wide the image is shown, e.g. '(max-width: 980px) 50vw, 420px'
+//   opts.priority      the page's main image: load first
+//   opts.eager         load now instead of when scrolled into view
+//   opts.artDirection  use the portrait phone crop if there is one
+//   opts.style         inline style for the <img>
+function responsiveImageHTML(path, alt, opts = {}) {
+  const style = opts.style || 'width:100%; height:100%; object-fit:cover;';
+  const loading = opts.priority ? ' fetchpriority="high"' : (opts.eager ? '' : ' loading="lazy"');
+  const attrs = `${loading} decoding="async"`;
+  const v = imageVariants(path);
+  if (!v) return imgTagWithFallback(path, alt, style, attrs);
+  const base = isInPagesFolder() ? '../assets/img/' : 'assets/img/';
+  const srcset = (stem, widths) => widths.map(w => `${base}${stem}-${w}.webp ${w}w`).join(', ');
+  let sources = '';
+  if (opts.artDirection && v.mobile) {
+    sources += `<source media="(max-width: 720px)" type="image/webp" srcset="${srcset(v.mobile.base, v.mobile.widths)}" sizes="100vw">`;
+  }
+  sources += `<source type="image/webp" srcset="${srcset(v.base, v.widths)}" sizes="${opts.sizes || '100vw'}">`;
+  return `<picture>${sources}<img src="${base}${v.fallback}" alt="${alt}" width="${v.w}" height="${v.h}" style="${style}"${attrs}></picture>`;
 }
 
 // Renders a product card's main thumbnail. Uses the product's first
 // gallery image if set, otherwise a designed placeholder.
-function productThumbHTML(product, swatchNum) {
+function productThumbHTML(product, swatchNum, opts = {}) {
   const firstImg = product.images && product.images[0];
-  const markPath = window.location.pathname.includes('/pages/') ? '../assets/mark-white.png' : 'assets/mark-white.png';
+  const markPath = isInPagesFolder() ? '../assets/mark-white.png' : 'assets/mark-white.png';
   if (firstImg && firstImg.src) {
-    return imgTagWithFallback(firstImg.src, firstImg.alt, 'width:100%; height:100%; object-fit:cover;');
+    return responsiveImageHTML(firstImg.src, firstImg.alt, { sizes: '(max-width: 980px) 50vw, 420px', ...opts });
   }
   return `
     <div class="swatch-placeholder swatch-${swatchNum}">
@@ -226,9 +360,9 @@ function productThumbHTML(product, swatchNum) {
 // Small thumbnail for cart/wishlist drawer rows
 function productMiniThumbHTML(product) {
   const firstImg = product.images && product.images[0];
-  const markPath = window.location.pathname.includes('/pages/') ? '../assets/mark-white.png' : 'assets/mark-white.png';
+  const markPath = isInPagesFolder() ? '../assets/mark-white.png' : 'assets/mark-white.png';
   if (firstImg && firstImg.src) {
-    return imgTagWithFallback(firstImg.src, firstImg.alt, 'width:100%; height:100%; object-fit:cover;');
+    return responsiveImageHTML(firstImg.src, firstImg.alt, { sizes: '80px' });
   }
   return `
     <div class="swatch-placeholder swatch-${product.swatch || 1}" style="padding:6px; gap:4px;">
@@ -237,16 +371,46 @@ function productMiniThumbHTML(product) {
   `;
 }
 
-function showToast(message) {
+const HEART_SVG = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 21s-7-4.5-9.3-9C1 8.5 2 5 5.3 5c2 0 3.3 1.2 3.7 2 .4-.8 1.7-2 3.7-2C16 5 17 8.5 15.3 12 13 16.5 12 21 12 21z"/></svg>';
+
+// One product card, used by the homepage, every category page and the
+// wishlist page. The photo and the name both open the product popup.
+function productCardHTML(p, i = 0) {
+  const url = productUrl(p.id);
+  return `
+    <div class="product-card" data-product-name="${p.name}" data-product-id="${p.id}">
+      <div class="product-img-wrap">
+        ${p.tag ? `<span class="product-tag gold">${p.tag}</span>` : ''}
+        <button type="button" class="wishlist-btn" data-wishlist-id="${p.id}" aria-pressed="false" onclick="toggleWishlist('${p.id}', this); event.stopPropagation();" aria-label="Save ${p.name} to wishlist">${HEART_SVG}</button>
+        <a href="${url}" class="product-img-link" tabindex="-1" onclick="return openProductFromLink(event, '${p.id}')">${productThumbHTML(p, (i % 6) + 1)}</a>
+        <button type="button" class="quick-add" tabindex="-1" onclick="openProductModal('${p.id}')">View Product</button>
+      </div>
+      <div class="product-info">
+        <a class="pname" href="${url}" onclick="return openProductFromLink(event, '${p.id}')">${p.name}</a>
+        <div class="pprice">${formatINR(p.price)} <span class="strike">${formatINR(p.mrp)}</span></div>
+      </div>
+    </div>
+  `;
+}
+
+function showToast(message, type = 'success') {
   const toast = document.getElementById('toast');
   if (!toast) return;
   toast.querySelector('span').textContent = message;
+  toast.classList.toggle('is-error', type === 'error');
+  toast.setAttribute('role', type === 'error' ? 'alert' : 'status');
   toast.classList.add('show');
   clearTimeout(window._toastTimer);
-  window._toastTimer = setTimeout(() => toast.classList.remove('show'), 2400);
+  window._toastTimer = setTimeout(() => toast.classList.remove('show'), type === 'error' ? 4000 : 2400);
 }
 
 // ---------- Cart Logic ----------
+// Guest cart ids are strings like "sk1_M"; logged-in ids are numbers from the
+// server. Buttons pass them as strings, so compare as strings.
+function sameCartId(a, b) {
+  return String(a) === String(b);
+}
+
 async function addToCart(id, size, qty = 1) {
   const result = findProductById(id);
   if (!result) return;
@@ -259,7 +423,7 @@ async function addToCart(id, size, qty = 1) {
       bounceCartIcon();
       showToast(`Added "${product.name}" (Size ${size}) to your bag`);
     } catch (err) {
-      showToast(err.message || 'Could not add to cart. Please try again.');
+      showToast(err.message || 'Could not add to cart. Please try again.', 'error');
     }
     return;
   }
@@ -290,12 +454,12 @@ async function removeFromCart(cartItemId) {
       await CartAPI.remove(cartItemId);
       await loadCart();
     } catch (err) {
-      showToast(err.message || 'Could not remove item. Please try again.');
+      showToast(err.message || 'Could not remove item. Please try again.', 'error');
     }
     return;
   }
 
-  cart = cart.filter(item => item.cartItemId !== cartItemId);
+  cart = cart.filter(item => !sameCartId(item.cartItemId, cartItemId));
   saveGuestCart();
   renderCart();
   renderCartPage();
@@ -304,7 +468,7 @@ async function removeFromCart(cartItemId) {
 }
 
 async function changeQty(cartItemId, delta) {
-  const item = cart.find(i => i.cartItemId === cartItemId);
+  const item = cart.find(i => sameCartId(i.cartItemId, cartItemId));
   if (!item) return;
   const newQty = item.qty + delta;
   if (newQty <= 0) {
@@ -317,7 +481,7 @@ async function changeQty(cartItemId, delta) {
       await CartAPI.updateQty(cartItemId, newQty);
       await loadCart();
     } catch (err) {
-      showToast(err.message || 'Could not update quantity. Please try again.');
+      showToast(err.message || 'Could not update quantity. Please try again.', 'error');
     }
     return;
   }
@@ -370,6 +534,18 @@ function guardCheckoutPage() {
   }
 }
 
+// Accepts "9876543210", "+91 98765 43210", "098765 43210" and returns the
+// 10-digit number, or null if it isn't a valid Indian mobile number.
+function normalizeIndianPhone(value) {
+  const digits = String(value).replace(/\D/g, '').replace(/^(91|0)(?=\d{10}$)/, '');
+  return /^\d{10}$/.test(digits) ? digits : null;
+}
+
+function initCheckoutForm() {
+  const phone = document.getElementById('checkoutPhone');
+  if (phone) phone.addEventListener('input', () => phone.setCustomValidity(''));
+}
+
 // Validates the checkout form, creates a real order on the backend, and
 // runs Razorpay's checkout widget (unless Cash on Delivery is selected, in
 // which case the order is created as-is with no online payment step).
@@ -381,14 +557,22 @@ async function placeOrder(e) {
     return;
   }
 
+  const phoneInput = document.getElementById('checkoutPhone');
+  const phone = normalizeIndianPhone(phoneInput.value);
+  if (!phone) {
+    phoneInput.setCustomValidity('Please enter a 10-digit mobile number.');
+    phoneInput.reportValidity();
+    return;
+  }
+
   const selectedPayment = document.querySelector('input[name="paymentMethod"]:checked');
   if (!selectedPayment) {
-    showToast('Please select a payment method');
+    showToast('Please select a payment method', 'error');
     return;
   }
 
   if (cart.length === 0) {
-    showToast('Your bag is empty');
+    showToast('Your bag is empty', 'error');
     return;
   }
 
@@ -397,7 +581,6 @@ async function placeOrder(e) {
 
   const name = document.getElementById('checkoutName').value;
   const email = document.getElementById('checkoutEmail').value;
-  const phone = document.getElementById('checkoutPhone').value;
   const address = [
     document.getElementById('checkoutAddress').value,
     document.getElementById('checkoutCity').value,
@@ -428,7 +611,7 @@ async function placeOrder(e) {
 
     openRazorpayCheckout(order, { name, email, phone }, orderItemsSnapshot);
   } catch (err) {
-    showToast(err.message || 'Could not place your order. Please try again.');
+    showToast(err.message || 'Could not place your order. Please try again.', 'error');
     if (submitBtn) { submitBtn.disabled = false; submitBtn.textContent = 'Place Order'; }
   }
 }
@@ -459,13 +642,13 @@ function openRazorpayCheckout(order, customer, orderItemsSnapshot) {
         }));
         window.location.href = 'order-confirmation.html';
       } catch (err) {
-        showToast('Payment succeeded but confirmation failed. Please contact support with your payment ID.');
+        showToast('Payment succeeded but confirmation failed. Please contact support with your payment ID.', 'error');
       }
     },
     modal: {
       ondismiss: function () {
         if (submitBtn) { submitBtn.disabled = false; submitBtn.textContent = 'Place Order'; }
-        showToast('Payment cancelled');
+        showToast('Payment cancelled', 'error');
       },
     },
   });
@@ -520,12 +703,11 @@ function renderCart() {
         <div class="ciprice">${formatINR(item.price)}</div>
         <div class="cart-qty-row">
           <div class="qty-control">
-            <button onclick="changeQty('${item.cartItemId}', -1)" aria-label="Decrease quantity">−</button>
+            <button type="button" onclick="changeQty('${item.cartItemId}', -1)" aria-label="Decrease quantity">−</button>
             <span>${item.qty}</span>
-            <button onclick="changeQty('${item.cartItemId}', 1)" aria-label="Increase quantity">+</button>
+            <button type="button" onclick="changeQty('${item.cartItemId}', 1)" aria-label="Increase quantity">+</button>
           </div>
-          <button class="cart-remove" onclick="removeFromCart('${item.cartItemId}')">
-          Remove
+          <button type="button" class="cart-remove" onclick="removeFromCart('${item.cartItemId}')">Remove</button>
         </div>
       </div>
     </div>
@@ -582,12 +764,12 @@ function renderCartPage() {
         <div class="cpr-price">${formatINR(item.price)} <span class="strike">${formatINR(item.mrp)}</span></div>
       </div>
       <div class="qty-control">
-        <button onclick="changeQty(${item.cartItemId}, -1)" aria-label="Decrease quantity">−</button>
+        <button type="button" onclick="changeQty('${item.cartItemId}', -1)" aria-label="Decrease quantity">−</button>
         <span>${item.qty}</span>
-        <button onclick="changeQty(${item.cartItemId}, 1)" aria-label="Increase quantity">+</button>
+        <button type="button" onclick="changeQty('${item.cartItemId}', 1)" aria-label="Increase quantity">+</button>
       </div>
       <div class="cart-page-line-total">${formatINR(item.price * item.qty)}</div>
-      <button class="cart-page-remove" onclick="removeFromCart(${item.cartItemId})" aria-label="Remove item">
+      <button type="button" class="cart-page-remove" onclick="removeFromCart('${item.cartItemId}')" aria-label="Remove item">
         <svg viewBox="0 0 24 24"><path d="M18 6L6 18M6 6l12 12"/></svg>
       </button>
     </div>
@@ -620,7 +802,7 @@ async function toggleWishlist(id, btnEl) {
       }
       await loadWishlist();
     } catch (err) {
-      showToast(err.message || 'Could not update wishlist. Please try again.');
+      showToast(err.message || 'Could not update wishlist. Please try again.', 'error');
     }
     return;
   }
@@ -628,23 +810,19 @@ async function toggleWishlist(id, btnEl) {
   // Guest: keep the wishlist in this browser until they log in at checkout.
   if (alreadySaved) {
     wishlist = wishlist.filter(p => p.id !== id);
-    if (btnEl) btnEl.classList.remove('active');
     showToast('Removed from wishlist');
   } else {
     wishlist.push({
       wishlistItemId: id, id: product.id, name: product.name, price: product.price,
       mrp: product.mrp, tag: product.tag, images: product.images,
     });
-    if (btnEl) btnEl.classList.add('active');
     showToast('Saved to your wishlist');
   }
   saveGuestWishlist();
   renderWishlist();
   renderWishlistPage();
   updateBadges();
-  document.querySelectorAll(`[data-wishlist-id="${id}"]`).forEach(el => {
-    el.classList.toggle('active', wishlist.some(p => p.id === id));
-  });
+  syncWishlistButtons();
 }
 
 function renderWishlist() {
@@ -668,8 +846,8 @@ function renderWishlist() {
         <div class="ciname">${item.name}</div>
         <div class="ciprice">${formatINR(item.price)}</div>
         <div class="cart-qty-row">
-          <button class="btn btn-primary" style="padding:8px 16px; font-size:11px;" onclick="openProductModal('${item.id}')">View</button>
-          <button class="cart-remove" onclick="toggleWishlist('${item.id}')">Remove</button>
+          <button type="button" class="btn btn-primary btn-sm" onclick="openProductModal('${item.id}')">View</button>
+          <button type="button" class="cart-remove" onclick="toggleWishlist('${item.id}')">Remove</button>
         </div>
       </div>
     </div>
@@ -692,22 +870,8 @@ function renderWishlistPage() {
     return;
   }
 
-  container.innerHTML = `<div class="product-grid">` + wishlist.map(item => `
-    <div class="product-card" data-product-name="${item.name}">
-      <div class="product-img-wrap">
-        ${item.tag ? `<span class="product-tag gold">${item.tag}</span>` : ''}
-        <button class="wishlist-btn active" data-wishlist-id="${item.id}" onclick="toggleWishlist('${item.id}', this)" aria-label="Remove from wishlist">
-          <svg viewBox="0 0 24 24"><path d="M12 21s-7-4.5-9.3-9C1 8.5 2 5 5.3 5c2 0 3.3 1.2 3.7 2 .4-.8 1.7-2 3.7-2C16 5 17 8.5 15.3 12 13 16.5 12 21 12 21z"/></svg>
-        </button>
-        <a href="javascript:void(0)" onclick="openProductModal('${item.id}')">${productThumbHTML(item, item.swatch || 1)}</a>
-        <button class="quick-add" onclick="openProductModal('${item.id}')">View Product</button>
-      </div>
-      <div class="product-info">
-        <div class="pname">${item.name}</div>
-        <div class="pprice">${formatINR(item.price)} <span class="strike">${formatINR(item.mrp)}</span></div>
-      </div>
-    </div>
-  `).join('') + `</div>`;
+  container.innerHTML = `<div class="product-grid">` + wishlist.map((item, i) => productCardHTML(item, i)).join('') + `</div>`;
+  syncWishlistButtons();
 }
 
 function updateBadges() {
@@ -722,21 +886,40 @@ function updateBadges() {
     wishlistBadge.textContent = wishlist.length;
     wishlistBadge.style.display = wishlist.length > 0 ? 'flex' : 'none';
   }
+  // Counts shown in the mobile menu
+  document.querySelectorAll('[data-count="cart"]').forEach(el => { el.textContent = cartCount; el.hidden = cartCount === 0; });
+  document.querySelectorAll('[data-count="wishlist"]').forEach(el => { el.textContent = wishlist.length; el.hidden = wishlist.length === 0; });
 }
 
 // ---------- Drawer open/close ----------
+let _openDrawerId = null;
+let _drawerReturnFocus = null;
+
 function openDrawer(which) {
+  const drawer = document.getElementById(which);
+  if (!drawer || _openDrawerId === which) return;
+  if (_openDrawerId) {
+    document.getElementById(_openDrawerId)?.classList.remove('active');
+  } else {
+    _drawerReturnFocus = document.activeElement;
+    lockScroll();
+  }
+  _openDrawerId = which;
   document.getElementById('overlayScrim').classList.add('active');
-  document.getElementById(which).classList.add('active');
-  document.body.style.overflow = 'hidden';
+  drawer.classList.add('active');
+  drawer.querySelector('.drawer-close')?.focus({ preventScroll: true });
 }
 function closeDrawers() {
+  if (!_openDrawerId) return;
   document.getElementById('overlayScrim').classList.remove('active');
   document.querySelectorAll('.drawer').forEach(d => d.classList.remove('active'));
-  document.body.style.overflow = '';
+  _openDrawerId = null;
+  unlockScroll();
+  if (_drawerReturnFocus && _drawerReturnFocus.focus) _drawerReturnFocus.focus({ preventScroll: true });
+  _drawerReturnFocus = null;
 }
 
-// ---------- Search ----------
+// ---------- Search (desktop search box: filters the products on this page) ----------
 function initSearch() {
   const input = document.getElementById('searchInput');
   if (!input) return;
@@ -759,20 +942,216 @@ function filterCategoryProducts(query) {
   if (countEl) countEl.textContent = `${visibleCount} item${visibleCount !== 1 ? 's' : ''}`;
 }
 
+// Whole-catalogue search used by the mobile menu. Matches every word
+// against the product name, its category and material.
+function searchProducts(query) {
+  const terms = query.trim().toLowerCase().split(/\s+/).filter(Boolean);
+  if (!terms.length) return [];
+  const found = [];
+  for (const [category, list] of Object.entries(PRODUCTS)) {
+    for (const p of list) {
+      const text = `${p.name} ${category.replace(/-/g, ' ')} ${p.material || ''}`.toLowerCase();
+      if (terms.every(t => text.includes(t))) found.push(p);
+    }
+  }
+  return found.slice(0, 24);
+}
+
+// ---------- Mobile menu ----------
+const MENU_ICONS = {
+  close: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M18 6L6 18M6 6l12 12"/></svg>',
+  search: '<svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3"/></svg>',
+  chevron: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg>',
+};
+
+// Builds the slide-out menu from site-structure.data.js, so adding a
+// category there updates the menu on every page.
+function initMobileMenu() {
+  if (!document.querySelector('.navbar .burger') || document.getElementById('mobileMenu')) return;
+  const structure = (typeof SITE_STRUCTURE === 'object' && SITE_STRUCTURE) || { nav: [], sections: {} };
+  const here = window.location.pathname.split('/').pop() || 'index.html';
+  const current = file => (file === here ? ' aria-current="page"' : '');
+
+  const items = structure.nav.map(item => {
+    const file = item.href.split('/').pop();
+    const sectionKey = Object.keys(structure.sections).find(k => structure.sections[k].hub_page === file);
+    const subs = (sectionKey && structure.sections[sectionKey].subsections) || [];
+    const link = `<a href="${sitePath(item.href)}"${current(file)}>${item.label}</a>`;
+    if (!subs.length) return `<li><div class="mm-item">${link}</div></li>`;
+    const open = file === here || subs.some(s => s.page === here);
+    const id = `mm-sub-${sectionKey}`;
+    return `<li>
+      <div class="mm-item">
+        ${link}
+        <button type="button" class="mm-toggle" aria-expanded="${open}" aria-controls="${id}" aria-label="${item.label} categories">${MENU_ICONS.chevron}</button>
+      </div>
+      <ul class="mm-sub" id="${id}"${open ? '' : ' hidden'}>
+        ${subs.map(s => `<li><a href="${sitePath('pages/' + s.page)}"${current(s.page)}>${s.title}</a></li>`).join('')}
+      </ul>
+    </li>`;
+  }).join('');
+
+  const tel = document.querySelector('.footer-contact a[href^="tel:"]');
+  const mail = document.querySelector('.footer-contact a[href^="mailto:"]');
+  const markPath = isInPagesFolder() ? '../assets/mark-black.png' : 'assets/mark-black.png';
+
+  document.body.insertAdjacentHTML('beforeend', `
+    <div class="mobile-menu-scrim" id="mobileMenuScrim"></div>
+    <div class="mobile-menu" id="mobileMenu" role="dialog" aria-modal="true" aria-label="Menu">
+      <div class="mm-head">
+        <a class="mm-logo" href="${sitePath('index.html')}"><img src="${markPath}" alt="" width="37" height="28">House of Arshi</a>
+        <button type="button" class="mm-close" aria-label="Close menu">${MENU_ICONS.close}</button>
+      </div>
+      <form class="mm-search" role="search" action="#" onsubmit="return false;">
+        ${MENU_ICONS.search}
+        <label class="sr-only" for="mmSearch">Search products</label>
+        <input type="search" id="mmSearch" placeholder="Search kurtis, sarees, sets…" autocomplete="off" enterkeyhint="search">
+      </form>
+      <div class="mm-results" id="mmResults" aria-live="polite"></div>
+      <nav class="mm-nav" aria-label="Shop categories">
+        <ul>
+          <li><div class="mm-item"><a href="${sitePath('index.html')}"${current('index.html')}>Home</a></div></li>
+          ${items}
+        </ul>
+      </nav>
+      <div class="mm-footer">
+        <a class="mm-row" id="mmAccount" href="${sitePath('pages/login.html')}">Login / Create account</a>
+        <a class="mm-row" href="${sitePath('pages/wishlist.html')}">Wishlist <span class="mm-count" data-count="wishlist" hidden>0</span></a>
+        <a class="mm-row" href="${sitePath('pages/cart.html')}">Your Bag <span class="mm-count" data-count="cart" hidden>0</span></a>
+        <a class="mm-row" href="${sitePath('pages/about.html')}">About Us</a>
+        ${tel ? `<a class="mm-row" href="${tel.getAttribute('href')}">Call ${tel.textContent.trim()}</a>` : ''}
+        ${mail ? `<a class="mm-row" href="${mail.getAttribute('href')}">Email us</a>` : ''}
+      </div>
+    </div>`);
+
+  const menu = document.getElementById('mobileMenu');
+  document.getElementById('mobileMenuScrim').addEventListener('click', () => closeMobileMenu());
+  menu.querySelector('.mm-close').addEventListener('click', () => closeMobileMenu());
+  menu.querySelectorAll('.mm-toggle').forEach(btn => btn.addEventListener('click', () => {
+    const open = btn.getAttribute('aria-expanded') !== 'true';
+    btn.setAttribute('aria-expanded', String(open));
+    document.getElementById(btn.getAttribute('aria-controls')).hidden = !open;
+  }));
+  // Tapping the page you're already on just closes the menu
+  menu.querySelector('.mm-nav').addEventListener('click', e => {
+    const a = e.target.closest('a[aria-current="page"]');
+    if (a) { e.preventDefault(); closeMobileMenu(); }
+  });
+
+  const input = document.getElementById('mmSearch');
+  let searchTimer;
+  input.addEventListener('input', () => {
+    clearTimeout(searchTimer);
+    searchTimer = setTimeout(() => renderMenuSearch(input.value), 120);
+  });
+  document.getElementById('mmResults').addEventListener('click', e => {
+    const a = e.target.closest('a[data-product-id]');
+    if (!a || e.metaKey || e.ctrlKey || e.shiftKey) return;
+    e.preventDefault();
+    closeMobileMenu({ restoreFocus: false });
+    openProductModal(a.dataset.productId);
+  });
+  updateBadges();
+}
+
+function renderMenuSearch(query) {
+  const box = document.getElementById('mmResults');
+  if (!box) return;
+  const q = query.trim();
+  if (q.length < 2) {
+    box.innerHTML = '';
+    return;
+  }
+  const found = searchProducts(q);
+  const summary = found.length
+    ? `${found.length} ${found.length === 1 ? 'product' : 'products'}`
+    : `No products match “${escapeHTML(q)}”`;
+  box.innerHTML = `<p class="mm-results-count">${summary}</p>` + found.map(p => `
+    <a class="mm-result" href="${productUrl(p.id)}" data-product-id="${p.id}">
+      <span class="mm-result-thumb">${productMiniThumbHTML(p)}</span>
+      <span>
+        <span class="mm-result-name">${p.name}</span>
+        <span class="mm-result-price">${formatINR(p.price)}</span>
+      </span>
+    </a>`).join('');
+}
+
+let _menuReturnFocus = null;
+
+function openMobileMenu(opts = {}) {
+  const menu = document.getElementById('mobileMenu');
+  if (!menu) return;
+  if (!menu.classList.contains('active')) {
+    _menuReturnFocus = document.activeElement;
+    menu.classList.add('active');
+    document.getElementById('mobileMenuScrim').classList.add('active');
+    document.querySelectorAll('.burger').forEach(b => b.setAttribute('aria-expanded', 'true'));
+    lockScroll();
+  }
+  const target = opts.focusSearch ? document.getElementById('mmSearch') : menu.querySelector('.mm-close');
+  if (target) target.focus({ preventScroll: true });
+}
+
+function closeMobileMenu(opts = {}) {
+  const menu = document.getElementById('mobileMenu');
+  if (!menu || !menu.classList.contains('active')) return;
+  menu.classList.remove('active');
+  document.getElementById('mobileMenuScrim').classList.remove('active');
+  document.querySelectorAll('.burger').forEach(b => b.setAttribute('aria-expanded', 'false'));
+  unlockScroll();
+  if (opts.restoreFocus !== false && _menuReturnFocus && _menuReturnFocus.focus) {
+    _menuReturnFocus.focus({ preventScroll: true });
+  }
+  _menuReturnFocus = null;
+}
+
+function toggleMobileMenu() {
+  const menu = document.getElementById('mobileMenu');
+  if (menu && menu.classList.contains('active')) closeMobileMenu();
+  else openMobileMenu();
+}
+
 // ---------- Newsletter Popup ----------
+// Shown once every two weeks at most, and only after the visitor has had a
+// chance to look around (half-way down the page or 25 seconds in). On
+// phones it's a small sheet at the bottom that doesn't block the page.
+const POPUP_SNOOZE_KEY = 'hoa_popup_snooze_until';
+const POPUP_SNOOZE_DAYS = 14;
+
 function initNewsletterPopup() {
   const scrim = document.getElementById('popupScrim');
   const popup = document.getElementById('newsletterPopup');
   if (!scrim || !popup) return;
+  if (Number(storageGet(POPUP_SNOOZE_KEY)) > Date.now()) return;
 
-  const alreadyShown = sessionStorage.getItem('hoa_popup_shown');
-  if (!alreadyShown) {
-    setTimeout(() => {
-      scrim.classList.add('active');
-      popup.classList.add('active');
-      sessionStorage.setItem('hoa_popup_shown', '1');
-    }, 1800);
+  let shown = false;
+  let timer = null;
+  const onScroll = () => {
+    const max = document.documentElement.scrollHeight - window.innerHeight;
+    if (max > 0 && window.scrollY / max > 0.5) show();
+  };
+  function show() {
+    if (shown) return;
+    // Don't interrupt while the visitor is using the menu, bag or a product
+    if (document.querySelector('.drawer.active, .product-modal.active, .mobile-menu.active')) {
+      clearTimeout(timer);
+      timer = setTimeout(show, 5000);
+      return;
+    }
+    shown = true;
+    clearTimeout(timer);
+    window.removeEventListener('scroll', onScroll);
+    storageSet(POPUP_SNOOZE_KEY, String(Date.now() + POPUP_SNOOZE_DAYS * 864e5));
+    // The photo is only used on large screens, so phones never download it
+    const imgSlot = document.getElementById('newsletterPopupImg');
+    if (imgSlot && !imgSlot.innerHTML.trim() && window.matchMedia('(min-width: 981px)').matches) {
+      imgSlot.innerHTML = sectionImageHTML('homepage', 'newsletter_popup_image', 4, 'large', { sizes: '440px', eager: true });
+    }
+    scrim.classList.add('active');
+    popup.classList.add('active');
   }
+  timer = setTimeout(show, 25000);
+  window.addEventListener('scroll', onScroll, { passive: true });
 }
 
 function closeNewsletterPopup() {
@@ -793,25 +1172,43 @@ function initHeroSlideshow() {
   const dots = document.querySelectorAll('.hero-dots button');
   if (slides.length === 0) return;
   let current = 0;
+  let timer = null;
+  let stoppedByVisitor = false;
+  const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
   function goTo(index) {
     slides[current].classList.remove('active');
     dots[current]?.classList.remove('active');
+    dots[current]?.setAttribute('aria-current', 'false');
     current = index;
     slides[current].classList.add('active');
     dots[current]?.classList.add('active');
+    dots[current]?.setAttribute('aria-current', 'true');
+  }
+  function start() {
+    if (reduceMotion || stoppedByVisitor || timer) return;
+    timer = setInterval(() => goTo((current + 1) % slides.length), 4500);
+  }
+  function stop() {
+    clearInterval(timer);
+    timer = null;
   }
 
-  dots.forEach((dot, i) => dot.addEventListener('click', () => goTo(i)));
-
-  setInterval(() => {
-    goTo((current + 1) % slides.length);
-  }, 4500);
-}
-
-// ---------- Mobile menu ----------
-function toggleMobileMenu() {
-  document.getElementById('mobileMenu')?.classList.toggle('active');
+  // Picking a slide stops the automatic rotation for good
+  dots.forEach((dot, i) => dot.addEventListener('click', () => {
+    stoppedByVisitor = true;
+    stop();
+    goTo(i);
+  }));
+  const hero = document.querySelector('.hero');
+  if (hero) {
+    hero.addEventListener('mouseenter', stop);
+    hero.addEventListener('mouseleave', start);
+    hero.addEventListener('focusin', stop);
+    hero.addEventListener('focusout', start);
+  }
+  document.addEventListener('visibilitychange', () => (document.hidden ? stop() : start()));
+  start();
 }
 
 // ---------- Footer legal accordion (FAQ / Privacy / Terms) ----------
@@ -882,13 +1279,35 @@ function initFooterLegal() {
   }
 }
 
+// ---------- Keyboard: Escape closes the top-most layer, Tab stays inside it ----------
+document.addEventListener('keydown', (e) => {
+  if (e.key !== 'Escape' && e.key !== 'Tab') return;
+  const modal = document.getElementById('productModal');
+  const modalOpen = modal && modal.classList.contains('active');
+  const popup = document.querySelector('.newsletter-popup.active');
+  const menu = document.querySelector('.mobile-menu.active');
+  const drawer = document.querySelector('.drawer.active');
+
+  if (e.key === 'Escape') {
+    if (modalOpen) closeProductModal();
+    else if (popup) closeNewsletterPopup();
+    else if (menu) closeMobileMenu();
+    else if (drawer) closeDrawers();
+    return;
+  }
+  const layer = modalOpen ? modal : (menu || drawer);
+  if (layer) trapFocus(layer, e);
+});
+
 // ---------- Init on load ----------
 document.addEventListener('DOMContentLoaded', () => {
+  initMobileMenu();
   initAccountNav();
   initSearch();
   initNewsletterPopup();
   initHeroSlideshow();
   initFooterLegal();
+  initCheckoutForm();
 
   document.getElementById('overlayScrim')?.addEventListener('click', closeDrawers);
   document.getElementById('popupScrim')?.addEventListener('click', closeNewsletterPopup);

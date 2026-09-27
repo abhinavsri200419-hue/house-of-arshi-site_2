@@ -3,19 +3,22 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#F8F4EC">
 <title>Create Account | House of Arshi</title>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@500;600;700;800&family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<link rel="icon" href="../favicon.ico" sizes="any">
+<link rel="apple-touch-icon" href="../apple-touch-icon.png">
+<link rel="preload" href="../assets/fonts/playfair-display-v40-latin.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="../assets/fonts/outfit-v15-latin.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="stylesheet" href="../assets/style.css">
 <style>
   body.auth-body {
     min-height: 100vh;
+    min-height: 100dvh;
     display: flex;
-    align-items: center;
-    justify-content: center;
+    flex-direction: column;
     position: relative;
-    overflow: hidden;
-    padding: 24px;
+    overflow-x: hidden;
+    padding: 24px 16px;
     background:
       radial-gradient(ellipse 80% 60% at 20% 15%, rgba(216, 184, 131, 0.35), transparent 60%),
       radial-gradient(ellipse 70% 50% at 85% 90%, rgba(232, 196, 192, 0.45), transparent 65%),
@@ -27,8 +30,8 @@
     position: absolute;
     top: 50%;
     left: 50%;
-    width: 720px;
-    height: 720px;
+    width: min(720px, 100vw);
+    height: min(720px, 100vw);
     transform: translate(-50%, -50%);
     background: radial-gradient(circle, rgba(182, 138, 78, 0.12) 0%, rgba(182, 138, 78, 0.04) 40%, transparent 70%);
     border-radius: 50%;
@@ -47,6 +50,8 @@
     z-index: 0;
   }
   .auth-card {
+    /* auto margins centre the card, but let it scroll when the keyboard is open */
+    margin: auto;
     position: relative;
     z-index: 1;
     width: 100%;
@@ -91,7 +96,7 @@
     font-size: 10.5px;
     letter-spacing: 0.18em;
     text-transform: uppercase;
-    color: var(--gold);
+    color: var(--gold-text);
     margin-top: 6px;
     text-align: center;
   }
@@ -105,11 +110,11 @@
     border: 1px solid var(--line);
     border-radius: 8px;
     font-family: var(--font-body);
-    font-size: 15px;
+    font-size: 16px;
     background: var(--ivory);
   }
   .auth-field input:focus { outline: none; border-color: var(--gold); }
-  .auth-hint { font-size: 12px; color: #948d86; margin-top: 5px; }
+  .auth-hint { font-size: 12px; color: var(--muted); margin-top: 5px; }
   .auth-submit {
     width: 100%;
     padding: 13px;
@@ -135,14 +140,26 @@
     margin-bottom: 18px;
     display: none;
   }
+  .auth-back {
+    display: inline-flex;
+    align-items: center;
+    min-height: 44px;
+    margin: -24px 0 4px -6px;
+    padding: 0 6px;
+    font-size: 14px;
+    font-weight: 500;
+    color: var(--muted);
+  }
+  .auth-back:hover { color: var(--black); }
   .auth-switch { text-align: center; margin-top: 22px; font-size: 14px; color: #6b6560; }
-  .auth-switch a { color: var(--gold); font-weight: 600; text-decoration: none; }
+  .auth-switch a { color: var(--gold-text); font-weight: 600; text-decoration: none; padding: 13px 4px; margin: 0 -4px; }
   .auth-switch a:hover { text-decoration: underline; }
 </style>
 </head>
 <body class="auth-body">
 
-<div class="auth-card">
+<main class="auth-card">
+  <a href="../index.html" class="auth-back">← Back to shop</a>
   <div class="auth-logo">
     <img src="../assets/mark-black.png" alt="House of Arshi mark">
     <span class="logo-wordmark">House of Arshi</span>
@@ -176,7 +193,7 @@
   </form>
 
   <p class="auth-switch">Already have an account? <a href="login.html">Log in</a></p>
-</div>
+</main>
 
 <script src="../assets/api-client.js"></script>
 <script>

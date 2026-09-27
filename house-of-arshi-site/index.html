@@ -3,9 +3,16 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#F8F4EC">
 <title>House of Arshi | Wear Your Story</title>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@500;600;700;800&family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<link rel="icon" href="favicon.ico" sizes="any">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<link rel="preload" href="assets/fonts/playfair-display-v40-latin.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="assets/fonts/outfit-v15-latin.woff2" as="font" type="font/woff2" crossorigin>
+<!-- hero-preload:start (written by dev-tools/optimize_images.py) -->
+<link rel="preload" as="image" type="image/webp" media="(max-width: 720px)" imagesrcset="assets/img/optimized/sections/Slide1hero-48a146df-m21-480.webp 480w, assets/img/optimized/sections/Slide1hero-48a146df-m21-509.webp 509w" imagesizes="100vw" fetchpriority="high">
+<link rel="preload" as="image" type="image/webp" media="(min-width: 721px)" imagesrcset="assets/img/optimized/sections/Slide1hero-48a146df-480.webp 480w, assets/img/optimized/sections/Slide1hero-48a146df-800.webp 800w, assets/img/optimized/sections/Slide1hero-48a146df-1200.webp 1200w, assets/img/optimized/sections/Slide1hero-48a146df-1600.webp 1600w, assets/img/optimized/sections/Slide1hero-48a146df-1915.webp 1915w" imagesizes="100vw" fetchpriority="high">
+<!-- hero-preload:end -->
 <link rel="stylesheet" href="assets/style.css">
 </head>
 <body>
@@ -26,11 +33,11 @@
 <nav class="navbar">
   <div class="nav-inner">
     <div class="nav-left">
-      <button class="burger" onclick="toggleMobileMenu()" aria-label="Open menu">
+      <button type="button" class="burger" onclick="toggleMobileMenu()" aria-label="Open menu" aria-expanded="false" aria-controls="mobileMenu">
         <span></span><span></span><span></span>
       </button>
       <a href="index.html" class="nav-logo">
-        <img src="assets/mark-black.png" alt="House of Arshi mark" class="mark-img">
+        <img src="assets/mark-black.png" alt="House of Arshi mark" class="mark-img" width="53" height="40">
         <div class="logo-text-block">
           <span class="logo-wordmark">House of Arshi</span>
           <span class="logo-tagline">Timeless Elegance, Crafted For You</span>
@@ -47,13 +54,16 @@
     <div class="nav-right">
       <div class="search-box">
         <svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3"/></svg>
-        <input type="text" id="searchInput" placeholder="Search kurtis, sarees, sets...">
+        <input type="text" id="searchInput" placeholder="Search kurtis, sarees, sets..." aria-label="Search products on this page">
       </div>
-      <button class="nav-icon-btn" onclick="openDrawer('wishlistDrawer')" aria-label="Open wishlist">
+      <button type="button" class="nav-icon-btn nav-search-btn" onclick="openMobileMenu({ focusSearch: true })" aria-label="Search products">
+        <svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3"/></svg>
+      </button>
+      <button type="button" class="nav-icon-btn nav-wishlist-btn" onclick="openDrawer('wishlistDrawer')" aria-label="Open wishlist">
         <svg viewBox="0 0 24 24"><path d="M12 21s-7-4.5-9.3-9C1 8.5 2 5 5.3 5c2 0 3.3 1.2 3.7 2 .4-.8 1.7-2 3.7-2C16 5 17 8.5 15.3 12 13 16.5 12 21 12 21z"/></svg>
         <span class="badge-count" id="wishlistBadge" style="display:none;">0</span>
       </button>
-      <button class="nav-icon-btn" id="cartIconBtn" onclick="openDrawer('cartDrawer')" aria-label="Open cart">
+      <button type="button" class="nav-icon-btn" id="cartIconBtn" onclick="openDrawer('cartDrawer')" aria-label="Open cart">
         <svg viewBox="0 0 24 24"><path d="M6 6h15l-1.5 9h-12z"/><path d="M6 6L4 3H2"/><circle cx="9" cy="20" r="1"/><circle cx="18" cy="20" r="1"/></svg>
         <span class="badge-count" id="cartBadge" style="display:none;">0</span>
       </button>
@@ -61,6 +71,8 @@
     </div>
   </div>
 </nav>
+
+<main id="main">
 
 <!-- ============ HERO SLIDESHOW ============ -->
 <section class="hero">
@@ -79,9 +91,9 @@
   </div>
 
   <div class="hero-dots">
-    <button class="active" aria-label="Slide 1"></button>
-    <button aria-label="Slide 2"></button>
-    <button aria-label="Slide 3"></button>
+    <button type="button" class="active" aria-label="Slide 1" aria-current="true"></button>
+    <button type="button" aria-label="Slide 2" aria-current="false"></button>
+    <button type="button" aria-label="Slide 3" aria-current="false"></button>
   </div>
 </section>
 
@@ -183,6 +195,8 @@
   </div>
 </section>
 
+</main>
+
 <footer>
   <div class="container">
     <div class="footer-grid">
@@ -214,24 +228,24 @@
         </div>
       </div>
       <div class="footer-col">
-        <h4>Shop</h4>
+        <h2>Shop</h2>
         <a href="pages/fusion-wear.html">Fusion Wear</a>
         <a href="pages/indo-western.html">Indo Western</a>
         <a href="pages/sarees.html">Sarees</a>
         <a href="pages/formals.html">Formals</a>
       </div>
       <div class="footer-col">
-        <h4>Company</h4>
+        <h2>Company</h2>
         <a href="pages/about.html">About Us</a>
         <a href="#">Contact</a>
         <a href="pages/cart.html">Your Bag</a>
         <a href="pages/wishlist.html">Wishlist</a>
       </div>
       <div class="footer-col">
-        <h4>Stay In The Loop</h4>
+        <h2>Stay In The Loop</h2>
         <p style="margin-bottom:14px;">Drops, discounts and nothing you will want to skip.</p>
         <form class="footer-newsletter-form" onsubmit="event.preventDefault(); showToast('You are on the list 🤍');">
-          <input type="email" placeholder="Your email" required>
+          <input type="email" placeholder="Your email" aria-label="Your email" autocomplete="email" required>
           <button type="submit">Join</button>
         </form>
         <div class="footer-legal-links">
@@ -267,11 +281,11 @@
   </div>
 </footer>
 
-<div class="toast" id="toast"><svg viewBox="0 0 24 24"><path d="M20 6L9 17l-5-5"/></svg><span></span></div>
+<div class="toast" id="toast" role="status" aria-live="polite"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20 6L9 17l-5-5"/></svg><span></span></div>
 <div class="overlay-scrim" id="overlayScrim"></div>
 
-<div class="drawer" id="cartDrawer">
-  <div class="drawer-header"><h3>Your Bag</h3><button class="drawer-close" onclick="closeDrawers()" aria-label="Close cart"><svg viewBox="0 0 24 24"><path d="M18 6L6 18M6 6l12 12"/></svg></button></div>
+<div class="drawer" id="cartDrawer" role="dialog" aria-modal="true" aria-labelledby="cartDrawerTitle">
+  <div class="drawer-header"><h3 id="cartDrawerTitle">Your Bag</h3><button type="button" class="drawer-close" onclick="closeDrawers()" aria-label="Close cart"><svg viewBox="0 0 24 24"><path d="M18 6L6 18M6 6l12 12"/></svg></button></div>
   <div class="drawer-body" id="cartBody"></div>
   <div class="drawer-footer" id="cartFooter" style="display:none;">
     <div class="drawer-subtotal"><span>Subtotal</span><span id="cartSubtotal">₹0</span></div>
@@ -279,25 +293,25 @@
     <p class="drawer-note">Shipping and taxes calculated at checkout</p>
   </div>
 </div>
-<div class="drawer" id="wishlistDrawer">
-  <div class="drawer-header"><h3>Your Wishlist</h3><button class="drawer-close" onclick="closeDrawers()" aria-label="Close wishlist"><svg viewBox="0 0 24 24"><path d="M18 6L6 18M6 6l12 12"/></svg></button></div>
+<div class="drawer" id="wishlistDrawer" role="dialog" aria-modal="true" aria-labelledby="wishlistDrawerTitle">
+  <div class="drawer-header"><h3 id="wishlistDrawerTitle">Your Wishlist</h3><button type="button" class="drawer-close" onclick="closeDrawers()" aria-label="Close wishlist"><svg viewBox="0 0 24 24"><path d="M18 6L6 18M6 6l12 12"/></svg></button></div>
   <div class="drawer-body" id="wishlistBody"></div>
 </div>
 
 <div class="popup-scrim" id="popupScrim"></div>
-<div class="newsletter-popup" id="newsletterPopup">
-  <button class="popup-close" onclick="closeNewsletterPopup()" aria-label="Close popup"><svg viewBox="0 0 24 24"><path d="M18 6L6 18M6 6l12 12"/></svg></button>
+<div class="newsletter-popup" id="newsletterPopup" role="dialog" aria-labelledby="npTitle">
+  <button type="button" class="popup-close" onclick="closeNewsletterPopup()" aria-label="Close popup"><svg viewBox="0 0 24 24"><path d="M18 6L6 18M6 6l12 12"/></svg></button>
   <div class="np-img" id="newsletterPopupImg"></div>
   <div class="np-content">
     <div id="npForm">
       <span class="eyebrow">Welcome To The House</span>
-      <h3>Get 10% Off<br>Your First Order</h3>
+      <h3 id="npTitle">Get 10% Off<br>Your First Order</h3>
       <p>Sign up for first dibs on new drops, festive edits and insider discounts.</p>
       <form class="np-form" onsubmit="submitNewsletter(event)">
-        <input type="email" placeholder="Enter your email" required>
+        <input type="email" placeholder="Enter your email" aria-label="Your email" autocomplete="email" required>
         <button type="submit" class="btn btn-primary">Claim My 10%</button>
       </form>
-      <a class="np-skip" onclick="closeNewsletterPopup()">No thanks, I will pay full price</a>
+      <button type="button" class="np-skip" onclick="closeNewsletterPopup()">No thanks, I will pay full price</button>
     </div>
     <div class="np-success" id="npSuccess">
       <span class="big-emoji">🤍</span>
@@ -308,16 +322,16 @@
 </div>
 
 <div class="product-modal-scrim" id="productModalScrim" onclick="closeProductModal()"></div>
-<div class="product-modal" id="productModal">
-  <button class="modal-close" onclick="closeProductModal()" aria-label="Close product details">
+<div class="product-modal" id="productModal" role="dialog" aria-modal="true" aria-labelledby="modalProductName">
+  <button type="button" class="modal-close" onclick="closeProductModal()" aria-label="Close product details">
     <svg viewBox="0 0 24 24"><path d="M18 6L6 18M6 6l12 12"/></svg>
   </button>
   <div class="modal-gallery">
     <div class="modal-main-image" id="modalMainImage"></div>
-    <button class="modal-nav-arrow prev" onclick="modalGoToImage(_modalState.currentImageIndex - 1)" aria-label="Previous image">
+    <button type="button" class="modal-nav-arrow prev" onclick="modalGoToImage(_modalState.currentImageIndex - 1)" aria-label="Previous image">
       <svg viewBox="0 0 24 24"><path d="M15 18l-6-6 6-6"/></svg>
     </button>
-    <button class="modal-nav-arrow next" onclick="modalGoToImage(_modalState.currentImageIndex + 1)" aria-label="Next image">
+    <button type="button" class="modal-nav-arrow next" onclick="modalGoToImage(_modalState.currentImageIndex + 1)" aria-label="Next image">
       <svg viewBox="0 0 24 24"><path d="M9 18l6-6-6-6"/></svg>
     </button>
     <div class="modal-dots" id="modalDots"></div>
@@ -337,11 +351,11 @@
     <div class="modal-section-label">Delivery</div>
     <p class="modal-text" id="modalDelivery"></p>
     <div class="modal-actions">
-      <button class="modal-wishlist-btn" id="modalWishlistBtn" aria-label="Add to wishlist">
+      <button type="button" class="modal-wishlist-btn" id="modalWishlistBtn" aria-label="Add to wishlist" aria-pressed="false">
         <svg viewBox="0 0 24 24"><path d="M12 21s-7-4.5-9.3-9C1 8.5 2 5 5.3 5c2 0 3.3 1.2 3.7 2 .4-.8 1.7-2 3.7-2C16 5 17 8.5 15.3 12 13 16.5 12 21 12 21z"/></svg>
       </button>
-      <button class="btn btn-outline" id="modalAddToCartBtn" onclick="modalAddToCart()">Add to Cart</button>
-      <button class="btn btn-primary" onclick="modalBuyNow()">Buy Now</button>
+      <button type="button" class="btn btn-outline" id="modalAddToCartBtn" onclick="modalAddToCart()">Add to Cart</button>
+      <button type="button" class="btn btn-primary" onclick="modalBuyNow()">Buy Now</button>
     </div>
   </div>
 </div>
@@ -350,20 +364,25 @@
 <script src="assets/data/site-structure.data.js"></script>
 <script src="assets/data/images.data.js"></script>
 <script src="assets/data/footer-legal.data.js"></script>
+<script src="assets/data/image-variants.data.js"></script>
 <script src="assets/api-client.js"></script>
 <script src="assets/app.js"></script>
 <script src="assets/modal.js"></script>
 <script>
-  // Hero slideshow backgrounds (editable via images.data.js homepage.hero_slide_1/2/3)
-  document.getElementById('heroSlide0').innerHTML = sectionImageHTML('homepage', 'hero_slide_1', 1);
-  document.getElementById('heroSlide1').innerHTML = sectionImageHTML('homepage', 'hero_slide_2', 2);
-  document.getElementById('heroSlide2').innerHTML = sectionImageHTML('homepage', 'hero_slide_3', 4);
+  // Hero slideshow backgrounds (editable via images.data.js homepage.hero_slide_1/2/3).
+  // Slide 1 is the page's main image, so it loads first; slides 2 and 3
+  // wait until everything else on the page has loaded.
+  document.getElementById('heroSlide0').innerHTML = sectionImageHTML('homepage', 'hero_slide_1', 1, 'large', { priority: true, artDirection: true });
+  window.addEventListener('load', () => {
+    document.getElementById('heroSlide1').innerHTML = sectionImageHTML('homepage', 'hero_slide_2', 2, 'large', { eager: true, artDirection: true });
+    document.getElementById('heroSlide2').innerHTML = sectionImageHTML('homepage', 'hero_slide_3', 4, 'large', { eager: true, artDirection: true });
+  });
 
-  // Sarees banner, Formals teaser, About teaser, newsletter popup images
+  // Sarees banner, Formals teaser, About teaser images
+  // (the newsletter popup photo is added by app.js when the popup opens)
   document.getElementById('sareesBannerImg').innerHTML = sectionImageHTML('sarees', 'homepage_banner', 5);
   document.getElementById('formalsTeaserImg').innerHTML = sectionImageHTML('homepage', 'formals_teaser_banner', 2);
-  document.getElementById('aboutTeaserImg').innerHTML = sectionImageHTML('homepage', 'about_teaser_image', 3);
-  document.getElementById('newsletterPopupImg').innerHTML = sectionImageHTML('homepage', 'newsletter_popup_image', 4);
+  document.getElementById('aboutTeaserImg').innerHTML = sectionImageHTML('homepage', 'about_teaser_image', 3, 'large', { sizes: '(max-width: 980px) 100vw, 50vw' });
 
   // Fusion Wear tiles (4 subsections)
   function renderHomepageTiles(containerId, sectionKey, imageSection, cardKeyMap) {
@@ -380,7 +399,7 @@
     `).join('');
     sec.subsections.forEach((sub, i) => {
       const cardKey = cardKeyMap[sub.key];
-      document.getElementById(`tile-${sub.key}`).innerHTML = sectionImageHTML(imageSection, cardKey, (i % 6) + 1);
+      document.getElementById(`tile-${sub.key}`).innerHTML = sectionImageHTML(imageSection, cardKey, (i % 6) + 1, 'large', { sizes: '(max-width: 980px) 50vw, 25vw' });
     });
   }
 
@@ -401,22 +420,7 @@
   function renderFeaturedGrid(containerId, categoryKey, count) {
     const container = document.getElementById(containerId);
     const items = PRODUCTS[categoryKey].slice(0, count);
-    container.innerHTML = items.map((p, i) => `
-      <div class="product-card" data-product-name="${p.name}">
-        <div class="product-img-wrap">
-          ${p.tag ? `<span class="product-tag gold">${p.tag}</span>` : ''}
-          <button class="wishlist-btn" data-wishlist-id="${p.id}" onclick="toggleWishlist('${p.id}', this)" aria-label="Add to wishlist">
-            <svg viewBox="0 0 24 24"><path d="M12 21s-7-4.5-9.3-9C1 8.5 2 5 5.3 5c2 0 3.3 1.2 3.7 2 .4-.8 1.7-2 3.7-2C16 5 17 8.5 15.3 12 13 16.5 12 21 12 21z"/></svg>
-          </button>
-          <a href="javascript:void(0)" onclick="openProductModal('${p.id}')">${productThumbHTML(p, (i % 6) + 1)}</a>
-          <button class="quick-add" onclick="openProductModal('${p.id}')">View Product</button>
-        </div>
-        <div class="product-info">
-          <div class="pname">${p.name}</div>
-          <div class="pprice">${formatINR(p.price)} <span class="strike">${formatINR(p.mrp)}</span></div>
-        </div>
-      </div>
-    `).join('');
+    container.innerHTML = items.map((p, i) => productCardHTML(p, i)).join('');
   }
   renderFeaturedGrid('sareesFeaturedGrid', 'sarees', 3);
   renderFeaturedGrid('indoFeaturedGrid', 'indo-western', 6);

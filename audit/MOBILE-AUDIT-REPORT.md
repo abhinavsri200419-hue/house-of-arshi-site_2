@@ -16,8 +16,75 @@
 > and [C4](#c4-bag-page-and-checkout-break-on-phones-and-tablets); patch in
 > [Appendix D](#appendix-d-verified-css-patch)).
 
+## Fix status (updated 27 September 2026)
+
+The mobile fixes from Phases 1–3 of the [fix plan](#8-recommended-fix-plan) are done on the
+branch `claude/house-of-arshi-audit-lhe2dd`. The rest of this report still describes the site
+**as it was audited**.
+
+They were re-tested in mobile Chromium at 320, 360, 390, 412, 768, 1024, 1280 and 1440 px on 14 pages that cover every page template (the other 8 are built from the same templates). Checkout and order confirmation were tested at 360–390 px:
+
+- **Page width:** matches the screen width on every page, including with the menu, bag, popups and FAQ panels open.
+- **Errors:** none in the console.
+- **Inputs:** none smaller than 16 px.
+- **Tap targets:** none smaller than 24 px. On touch screens every target is at least 44 px, apart from the product names; their tap area covers the whole name-and-price block.
+- **Purchase path:** works by touch alone at 360–390 px, from menu → search or category → product → size → *Add to Cart* → bag → checkout → *Place Order* (cash on delivery). The test used a stand-in for the backend, which isn't live yet ([C6](#c6-login-sign-up-and-checkout-fail-for-everyone-on-the-live-site)).
+
+**Lighthouse, before → after** (mobile preset, simulated slow 4G, 2 runs per page)
+
+| Page | Performance | Accessibility | Best practices | SEO | LCP | CLS | Page weight |
+|---|---|---|---|---|---|---|---|
+| Home | 72 → **91–97** | 94 → **100** | 96 → **100** | 73 → 82 | 51.4 s → **2.6–3.1 s** | 0.005 → 0 | 11.9 MB → **0.33 MB** |
+| Category (Short Kurtis) | 97 → 97–100 | 92 → **100** | 96 → **100** | 82 → 91 | 1.2–1.3 s → 1.7–2.3 s | 0.106 → **0.046** | 2.2 MB → **0.17 MB** |
+| Fusion Wear hub | 100 → 100 | 92 → **100** | 96 → **100** | 91 → 91 | 1.4 s → 1.5 s | 0.002 → 0 | 2.2 MB → **0.17 MB** |
+| About | 100 → 100 | 92 → **100** | 96 → **100** | 91 → 91 | 1.2–1.4 s → 1.5–1.6 s | 0.001 → 0 | 0.13 MB → 0.14 MB |
+| Login | 99 → 100 | 97 → **100** | 96 → **100** | 91 → 91 | 1.7 s → 1.5–1.6 s | 0.009 → 0 | 0.10 MB → 0.10 MB |
+
+The only Lighthouse failures left are SEO ones (missing meta descriptions, and "Read More" link
+text). The category pages' LCP rose slightly because the fonts now load up front. That is what
+stops the headings jumping (CLS 0.106 → 0.046), and LCP stays under the 2.5 s "good" line. On the
+home page, most of the remaining LCP is the page's JavaScript drawing the hero banner. Putting the
+first slide straight into the HTML would bring it under 2.5 s.
+
+| Issue | Status | What changed |
+|---|---|---|
+| [C1](#c1-pages-are-wider-than-the-phone-screen) Page wider than the phone | ✅ Fixed | Compact phone navbar; every page fits 320–1440 px |
+| [C2](#c2-there-is-no-navigation-menu-on-phones) No phone menu | ✅ Fixed | Slide-out menu built from `site-structure.data.js`: categories, search, login, wishlist, bag and contact |
+| [C3](#c3-the-product-popup-is-unusable-on-phones-and-tablets) Product popup | ✅ Fixed | Full-screen sheet on phones, swipeable photos, pinned buttons; the back button closes it |
+| [C4](#c4-bag-page-and-checkout-break-on-phones-and-tablets) Bag and checkout | ✅ Fixed | Single column on phones and tablets |
+| [C5](#c5-bag-page--and-remove-buttons-crash-for-guests) Bag +/− crash | ✅ Fixed | IDs quoted; missing `</button>` closed |
+| [C6](#c6-login-sign-up-and-checkout-fail-for-everyone-on-the-live-site) Login and online payment | ⏳ Open | Needs the live API URL, the Razorpay script and a decision on guest checkout (Phase 4). Phone numbers are now normalised (`+91 98765 43210` → `9876543210`) |
+| [H1](#h1-the-home-page-downloads-12-mb-on-a-phone) 12 MB home page | ✅ Fixed | WebP in several sizes, lazy loading, a preloaded hero, a deferred popup image and cache headers |
+| [H2](#h2-hero-banners-show-an-empty-wall-on-phones) Hero on phones | ✅ Fixed | Portrait crops chosen with `mobile_focus` |
+| [H3](#h3-tablets-and-small-laptops-get-a-desktop-menu-that-doesnt-fit) Tablet menu | ✅ Fixed | Menu button up to 1180 px |
+| [H4](#h4-a-newsletter-popup-interrupts-every-new-visit-on-phones) Newsletter popup | ✅ Fixed (copy open) | After half a page of scrolling or 25 s, at most once per 14 days; a bottom sheet on phones. The emailed-code promise still needs a real email service |
+| [H5](#h5-tap-targets-are-too-small) Small tap targets | ✅ Fixed | 44 px targets on touch screens |
+| [H6](#h6-inputs-zoom-the-page-on-iphone-and-checkout-isnt-autofill-friendly) Input zoom and autofill | ✅ Fixed | 16 px inputs; `autocomplete` and `inputmode` on checkout |
+| [H7](#h7-the-back-button-leaves-the-page-and-products-have-no-links) Back button and product links | ✅ Fixed | Shareable links such as `short-kurtis.html#p-sk1` |
+| [H8](#h8-on-product-cards-only-the-photo-responds-to-a-tap) Card taps | ✅ Fixed | The photo, name and price all open the product |
+| M1 SEO and link previews | 🟡 Partly | Favicon, home-screen icon, `theme-color` and product links added. Meta descriptions, Open Graph, `robots.txt`, sitemap and JSON-LD are Phase 4 |
+| M2 Grey shadow | ✅ Fixed | |
+| M3 Toasts | ✅ Fixed | Fit the screen; errors look like errors; shown at the top on phones |
+| M4 `vh` and scroll lock | ✅ Fixed | `dvh`/`svh` units; iOS-safe scroll lock |
+| M5 Wishlist *View* crash | ✅ Fixed | The product popup works on every page |
+| M6 No search on phones | ✅ Fixed | Search in the menu and a search icon in the header |
+| M7 Small, low-contrast text | ✅ Fixed | New `--gold-text` and `--muted` colours (≥ 4.5:1); small labels enlarged |
+| M8 Fonts | ✅ Fixed | Self-hosted and preloaded |
+| M9 FAQ panels widen the page | ✅ Fixed | |
+| M10 Accessibility gaps | ✅ Fixed | `<main>`, heading order, labels, dialog roles, focus trap and return, Esc, `aria-expanded`, hero pause and reduced motion |
+| M11 Placeholder captions overlap | ✅ Fixed | Captions hidden on tiles and banners |
+| L1 Developer files are public | ⏳ Open | Phase 4 |
+| L2 Dead links | ⏳ Open | Needs the real Instagram, Pinterest and WhatsApp links |
+| L3 Generators out of sync | ✅ Fixed | `partials.py` matches the pages; the generators rebuild the 14 pages exactly |
+| L4 Inconsistencies | 🟡 Partly | Login/sign-up "Back to shop" link, item counts, the empty `<img>` and the developer guide fixed. The announcement-bar position and the duplicate "03" remain |
+| L5 404 page | ⏳ Open | Phase 4 |
+| L6 Synchronous scripts | ⏳ Open | Low impact, because the scripts sit at the end of each page |
+| L7 Visual nits | 🟡 Partly | The floating tag fits on phones; the desktop tile grid is unchanged |
+| §6 Content and policies | ⏳ Open | Owner actions: product photos, About copy, and consistent shipping, size and returns wording |
+
 ## Contents
 
+0. [Fix status](#fix-status-updated-27-september-2026)
 1. [At a glance](#1-at-a-glance)
 2. [Critical issues (P0)](#2-critical-issues-p0-block-shopping)
 3. [High priority (P1)](#3-high-priority-p1)

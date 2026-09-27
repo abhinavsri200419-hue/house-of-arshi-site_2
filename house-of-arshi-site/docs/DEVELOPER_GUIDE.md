@@ -68,6 +68,15 @@ Open `assets/data/products.data.js`. Every product looks like this:
    modal gallery will now show your real photos. The first image in the
    array is what shows on the product grid card; all 4 show in the
    gallery when someone clicks the product.
+4. Make the photos fast on phones (see PART 9): from the
+   `house-of-arshi-site` folder run
+
+   ```
+   python3 dev-tools/optimize_images.py
+   ```
+
+   and commit the new files it creates. Skipping this step doesn't break
+   anything, but phones then download the full-size photo.
 
 You can update products one at a time. Any product still set to `null`
 keeps showing its designed placeholder, nothing breaks.
@@ -89,7 +98,9 @@ keeps showing its designed placeholder, nothing breaks.
 | Trousers | tr1 to tr10 |
 | Blazers | bl1 to bl10 |
 
-Recommended photo size: 900x1200px (3:4 ratio), JPG, under 500KB each.
+Recommended photo size: at least 1200x1600px (3:4 ratio), JPG. The
+optimizer in PART 9 makes the small phone-sized copies for you, so there's
+no need to shrink photos by hand.
 
 ----------------------------------------------------------------------
 ## PART 2: Adding a New Product
@@ -169,7 +180,21 @@ or `../` yourself, the site works that out automatically.
   photos further down the page
 
 Put your image files in `assets/img/sections/` to keep things organized,
-though any path inside `assets/` will work.
+though any path inside `assets/` will work. After adding or replacing an
+image, run the optimizer (PART 9).
+
+### Hero banners on phones
+
+The hero banners are wide landscape photos, but phones show a tall, narrow
+slice of them. Each hero entry has a `"mobile_focus"` value that picks which
+part of the photo phones see, from `0` (left edge) to `1` (right edge):
+
+```js
+"hero_slide_1": { "src": "sections/Slide1hero.png", "alt": "...", "mobile_focus": 0.21 }
+```
+
+`0.21` centres the phone crop on the model standing on the left of that
+banner. After changing it, re-run the optimizer so it re-cuts the crop.
 
 ----------------------------------------------------------------------
 ## PART 5: Editing About Us Content
@@ -191,11 +216,24 @@ tags themselves.
 ## PART 6: Understanding the Navigation
 ----------------------------------------------------------------------
 
-The navbar shows: Fusion Wear, Indo Western, Sarees, Formals. This is
-hardcoded into each page's navbar for simplicity, if you want to change
-nav labels or add a new top-level section, you would need to update the
-navbar markup across all pages (ask for help with this if needed, since
+The navbar shows: Fusion Wear, Indo Western, Semi Formals, Sarees, Formals.
+This is hardcoded into each page's navbar for simplicity, if you want to
+change nav labels or add a new top-level section, you would need to update
+the navbar markup across all pages (ask for help with this if needed, since
 it touches many files at once).
+
+On phones and tablets (up to 1180px wide) the navbar collapses into a menu
+button. That slide-out menu is built automatically by `assets/app.js` from
+`assets/data/site-structure.data.js` (the `nav` list plus each section's
+`subsections`), so it always matches the data file. It also holds product
+search, Login, Wishlist and Your Bag.
+
+The shared page parts (navbar, footer, drawers, product popup) are written
+in `dev-tools/partials.py`. Running `python3 dev-tools/gen_subsection_pages.py`
+and `python3 dev-tools/gen_hub_pages.py` from the site folder rebuilds the 14
+category and hub pages from it. The other 8 pages (home, About, bag,
+checkout, wishlist, order confirmation, login, sign up) are edited by hand,
+so a navbar or footer change must be made there too.
 
 ----------------------------------------------------------------------
 ## PART 7: The Formals Section, Why It Looks Different
@@ -228,42 +266,101 @@ be selected before either button will work, the person will see a small
 warning message if they try without picking one.
 
 ----------------------------------------------------------------------
+## PART 9: Phone Speed, Images and Fonts
+----------------------------------------------------------------------
+
+Phones are the main way people shop the site, so pages are kept light:
+
+- **Photos.** `dev-tools/optimize_images.py` (needs `pip install pillow`
+  once) makes WebP copies of every photo in `assets/img/` in several widths,
+  plus a JPEG for old browsers and the portrait hero crops, and lists them
+  in `assets/data/image-variants.data.js`. The site picks the right size for
+  each screen automatically. Run it whenever you add or replace a photo,
+  and commit everything it creates. It also deletes copies of photos you
+  removed.
+- **First hero banner.** The optimizer also writes two "preload" lines
+  near the top of `index.html`, between the `hero-preload` markers, so
+  phones start downloading the first banner straight away. Leave the
+  markers in place; the script keeps the lines up to date.
+- **Fonts.** Playfair Display and Outfit are served from `assets/fonts/`
+  instead of Google Fonts (see the README there).
+- **Caching.** `vercel.json` tells browsers to keep optimised photos and
+  fonts for a year. That's safe because their file names change whenever
+  the content does.
+- **Site icons.** `favicon.ico` (browser tab) and `apple-touch-icon.png`
+  (phone home screen) are made from the logo mark by
+  `dev-tools/make_icons.py`. Re-run it only if the logo changes.
+
+----------------------------------------------------------------------
+## PART 10: Mobile Layout Notes (for developers)
+----------------------------------------------------------------------
+
+- Breakpoints in `assets/style.css`: up to 1180px the header uses the menu
+  button, up to 980px is the tablet layout, and up to 720px is the phone
+  layout. These media queries sit at the end of the file on purpose: a
+  media query only wins over a normal rule written later in the file if it
+  comes after it, so keep new responsive rules below the component rules
+  they change.
+- Product links look like `pages/short-kurtis.html#p-sk1`. Opening one
+  shows that product's popup, so they can be shared on WhatsApp or
+  Instagram. The phone's back button closes the popup.
+- On phones the product popup fills the screen, photos can be swiped, and
+  Add to Cart / Buy Now stay pinned at the bottom.
+- The newsletter popup (home page only) appears after the visitor scrolls
+  half-way down or after 25 seconds, and at most once every 14 days. On
+  phones it's a small sheet at the bottom that doesn't block the page.
+- Closed popups, drawers and the menu are hidden with `visibility: hidden`
+  (not just made transparent), so keyboard and screen-reader users can't
+  land on buttons they can't see. Keep that pattern for any new overlay.
+
+----------------------------------------------------------------------
 ## Folder Structure Reference
 ----------------------------------------------------------------------
 
 ```
 index.html                    <- homepage
+vercel.json                   <- caching rules for Vercel
+favicon.ico, apple-touch-icon.png  <- site icons (made by make_icons.py)
 pages/
-  fusion-wear.html             <- Fusion Wear hub (4 tiles)
-  indo-western.html            <- Indo Western hub (4 tiles)
-  short-kurtis.html             <- subsection page (10 products)
-  aline-kurtas.html
+  fusion-wear.html             <- Fusion Wear hub (6 tiles)
+  short-kurtis.html             <- category pages (6 products each)
+  kurtas.html
   anarkali-sets.html
   long-frocks.html
-  coord-sets.html
-  indo-tops.html
-  indo-frocks.html
-  office-wear.html
-  sarees.html                   <- standalone, no hub needed
-  suits.html                    <- built, not yet linked from nav
+  tops.html
+  nightwear.html
+  indo-western.html             <- standalone category pages
+  semi-formals.html
+  sarees.html
+  formals.html                  <- Formals hub (3 tiles)
+  suits.html
   trousers.html
   blazers.html
-  coming-soon-formals.html      <- public Formals teaser
   about.html
-  cart.html
+  cart.html, checkout.html, order-confirmation.html
   wishlist.html
+  login.html, signup.html
 assets/
   style.css
-  app.js                        <- cart, wishlist, search logic
+  app.js                        <- cart, wishlist, search, mobile menu
   modal.js                      <- product detail popup logic
+  api-client.js                 <- calls to the backend
   mark-black.png, mark-white.png  <- logo mark, two color variants
+  fonts/                        <- self-hosted web fonts
   data/
     products.data.js            <- EDIT THIS for product info and photos
     images.data.js               <- EDIT THIS for section/banner photos
     site-structure.data.js       <- navigation and section descriptions
+    footer-legal.data.js         <- FAQ, Privacy Policy, Terms text
+    image-variants.data.js       <- generated by optimize_images.py
   img/
     products/                    <- put product photos here
     sections/                    <- put banner/hero photos here
+    optimized/                   <- generated by optimize_images.py
+dev-tools/
+  optimize_images.py            <- run after adding or replacing photos
+  make_icons.py                 <- rebuilds the site icons from the logo
+  partials.py, gen_*.py         <- rebuild the category and hub pages
 ```
 
 ----------------------------------------------------------------------

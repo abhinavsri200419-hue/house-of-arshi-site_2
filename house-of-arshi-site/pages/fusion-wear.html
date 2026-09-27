@@ -3,9 +3,12 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#F8F4EC">
 <title>Fusion Wear | House of Arshi</title>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@500;600;700;800&family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<link rel="icon" href="../favicon.ico" sizes="any">
+<link rel="apple-touch-icon" href="../apple-touch-icon.png">
+<link rel="preload" href="../assets/fonts/playfair-display-v40-latin.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="../assets/fonts/outfit-v15-latin.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="stylesheet" href="../assets/style.css">
 </head>
 <body>
@@ -14,11 +17,11 @@
 <nav class="navbar">
   <div class="nav-inner">
     <div class="nav-left">
-      <button class="burger" onclick="toggleMobileMenu()" aria-label="Open menu">
+      <button type="button" class="burger" onclick="toggleMobileMenu()" aria-label="Open menu" aria-expanded="false" aria-controls="mobileMenu">
         <span></span><span></span><span></span>
       </button>
       <a href="../index.html" class="nav-logo">
-        <img src="../assets/mark-black.png" alt="House of Arshi mark" class="mark-img">
+        <img src="../assets/mark-black.png" alt="House of Arshi mark" class="mark-img" width="53" height="40">
         <div class="logo-text-block">
           <span class="logo-wordmark">House of Arshi</span>
           <span class="logo-tagline">Timeless Elegance, Crafted For You</span>
@@ -35,13 +38,16 @@
     <div class="nav-right">
       <div class="search-box">
         <svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3"/></svg>
-        <input type="text" id="searchInput" placeholder="Search this collection...">
+        <input type="text" id="searchInput" placeholder="Search this collection..." aria-label="Search this collection">
       </div>
-      <button class="nav-icon-btn" onclick="openDrawer('wishlistDrawer')" aria-label="Open wishlist">
+      <button type="button" class="nav-icon-btn nav-search-btn" onclick="openMobileMenu({ focusSearch: true })" aria-label="Search products">
+        <svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3"/></svg>
+      </button>
+      <button type="button" class="nav-icon-btn nav-wishlist-btn" onclick="openDrawer('wishlistDrawer')" aria-label="Open wishlist">
         <svg viewBox="0 0 24 24"><path d="M12 21s-7-4.5-9.3-9C1 8.5 2 5 5.3 5c2 0 3.3 1.2 3.7 2 .4-.8 1.7-2 3.7-2C16 5 17 8.5 15.3 12 13 16.5 12 21 12 21z"/></svg>
         <span class="badge-count" id="wishlistBadge" style="display:none;">0</span>
       </button>
-      <button class="nav-icon-btn" id="cartIconBtn" onclick="openDrawer('cartDrawer')" aria-label="Open cart">
+      <button type="button" class="nav-icon-btn" id="cartIconBtn" onclick="openDrawer('cartDrawer')" aria-label="Open cart">
         <svg viewBox="0 0 24 24"><path d="M6 6h15l-1.5 9h-12z"/><path d="M6 6L4 3H2"/><circle cx="9" cy="20" r="1"/><circle cx="18" cy="20" r="1"/></svg>
         <span class="badge-count" id="cartBadge" style="display:none;">0</span>
       </button>
@@ -65,6 +71,7 @@
 </div>
 
 
+<main id="main">
 <div class="page-header has-bg-img theme-fusion">
   <div class="page-header-pattern">
     <img class="motif-1" src="../assets/mark-white.png" alt="" style="object-fit:contain;">
@@ -131,6 +138,7 @@
     </div>
   </div>
 </section>
+</main>
 
 
 <footer>
@@ -164,7 +172,7 @@
         </div>
       </div>
       <div class="footer-col">
-        <h4>Shop</h4>
+        <h2>Shop</h2>
         <a href="fusion-wear.html">Fusion Wear</a>
         <a href="indo-western.html">Indo Western</a>
         <a href="semi-formals.html">Semi Formals</a>
@@ -172,17 +180,17 @@
         <a href="formals.html">Formals</a>
       </div>
       <div class="footer-col">
-        <h4>Company</h4>
+        <h2>Company</h2>
         <a href="about.html">About Us</a>
         <a href="#">Contact</a>
         <a href="cart.html">Your Bag</a>
         <a href="wishlist.html">Wishlist</a>
       </div>
       <div class="footer-col">
-        <h4>Stay In The Loop</h4>
+        <h2>Stay In The Loop</h2>
         <p style="margin-bottom:14px;">Drops, discounts and nothing you will want to skip.</p>
         <form class="footer-newsletter-form" onsubmit="event.preventDefault(); showToast('You are on the list 🤍');">
-          <input type="email" placeholder="Your email" required>
+          <input type="email" placeholder="Your email" aria-label="Your email" autocomplete="email" required>
           <button type="submit">Join</button>
         </form>
         <div class="footer-legal-links">
@@ -220,15 +228,15 @@
 
 
 
-<div class="toast" id="toast"><svg viewBox="0 0 24 24"><path d="M20 6L9 17l-5-5"/></svg><span></span></div>
+<div class="toast" id="toast" role="status" aria-live="polite"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20 6L9 17l-5-5"/></svg><span></span></div>
 
 
 <div class="overlay-scrim" id="overlayScrim"></div>
 
-<div class="drawer" id="cartDrawer">
+<div class="drawer" id="cartDrawer" role="dialog" aria-modal="true" aria-labelledby="cartDrawerTitle">
   <div class="drawer-header">
-    <h3>Your Bag</h3>
-    <button class="drawer-close" onclick="closeDrawers()" aria-label="Close cart"><svg viewBox="0 0 24 24"><path d="M18 6L6 18M6 6l12 12"/></svg></button>
+    <h3 id="cartDrawerTitle">Your Bag</h3>
+    <button type="button" class="drawer-close" onclick="closeDrawers()" aria-label="Close cart"><svg viewBox="0 0 24 24"><path d="M18 6L6 18M6 6l12 12"/></svg></button>
   </div>
   <div class="drawer-body" id="cartBody"></div>
   <div class="drawer-footer" id="cartFooter" style="display:none;">
@@ -238,10 +246,10 @@
   </div>
 </div>
 
-<div class="drawer" id="wishlistDrawer">
+<div class="drawer" id="wishlistDrawer" role="dialog" aria-modal="true" aria-labelledby="wishlistDrawerTitle">
   <div class="drawer-header">
-    <h3>Your Wishlist</h3>
-    <button class="drawer-close" onclick="closeDrawers()" aria-label="Close wishlist"><svg viewBox="0 0 24 24"><path d="M18 6L6 18M6 6l12 12"/></svg></button>
+    <h3 id="wishlistDrawerTitle">Your Wishlist</h3>
+    <button type="button" class="drawer-close" onclick="closeDrawers()" aria-label="Close wishlist"><svg viewBox="0 0 24 24"><path d="M18 6L6 18M6 6l12 12"/></svg></button>
   </div>
   <div class="drawer-body" id="wishlistBody"></div>
 </div>
@@ -252,6 +260,7 @@
 <script src="../assets/data/site-structure.data.js"></script>
 <script src="../assets/data/images.data.js"></script>
 <script src="../assets/data/footer-legal.data.js"></script>
+<script src="../assets/data/image-variants.data.js"></script>
 <script src="../assets/api-client.js"></script>
 <script src="../assets/app.js"></script>
 <script src="../assets/modal.js"></script>
@@ -259,12 +268,12 @@
 
 
 <script>
-  document.getElementById('tile-short-kurtis').innerHTML = sectionImageHTML('fusion_wear', 'card_short_kurtis', 1);
-  document.getElementById('tile-kurtas').innerHTML = sectionImageHTML('fusion_wear', 'card_kurtas', 2);
-  document.getElementById('tile-anarkali-sets').innerHTML = sectionImageHTML('fusion_wear', 'card_anarkali_sets', 3);
-  document.getElementById('tile-long-frocks').innerHTML = sectionImageHTML('fusion_wear', 'card_long_frocks', 4);
-  document.getElementById('tile-tops').innerHTML = sectionImageHTML('fusion_wear', 'card_tops', 5);
-  document.getElementById('tile-nightwear').innerHTML = sectionImageHTML('fusion_wear', 'card_nightwear', 6);
+  document.getElementById('tile-short-kurtis').innerHTML = sectionImageHTML('fusion_wear', 'card_short_kurtis', 1, 'large', { sizes: '(max-width: 980px) 50vw, 25vw' });
+  document.getElementById('tile-kurtas').innerHTML = sectionImageHTML('fusion_wear', 'card_kurtas', 2, 'large', { sizes: '(max-width: 980px) 50vw, 25vw' });
+  document.getElementById('tile-anarkali-sets').innerHTML = sectionImageHTML('fusion_wear', 'card_anarkali_sets', 3, 'large', { sizes: '(max-width: 980px) 50vw, 25vw' });
+  document.getElementById('tile-long-frocks').innerHTML = sectionImageHTML('fusion_wear', 'card_long_frocks', 4, 'large', { sizes: '(max-width: 980px) 50vw, 25vw' });
+  document.getElementById('tile-tops').innerHTML = sectionImageHTML('fusion_wear', 'card_tops', 5, 'large', { sizes: '(max-width: 980px) 50vw, 25vw' });
+  document.getElementById('tile-nightwear').innerHTML = sectionImageHTML('fusion_wear', 'card_nightwear', 6, 'large', { sizes: '(max-width: 980px) 50vw, 25vw' });
 </script>
 </body>
 </html>

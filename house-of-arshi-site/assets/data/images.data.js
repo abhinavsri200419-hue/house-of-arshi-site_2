@@ -1,19 +1,25 @@
 // AUTO-GENERATED data file. Edit images.json and regenerate, or edit here directly.
-// To swap an image: find its entry below and change "src": null to "src": "img/sections/yourfile.jpg"
+// To swap an image: find its entry below and change "src": null to "src": "sections/yourfile.jpg"
+// then run  python3 dev-tools/optimize_images.py  so phones get a small, fast copy.
+// "mobile_focus" (hero banners only): which part of a wide banner phones show,
+// from 0 (left edge) to 1 (right edge). Re-run the script after changing it.
 const IMAGES = {
   "_README": "Edit the 'src' value for any entry below to swap that image. Paths are relative to the assets/img/ folder. Leave 'src' as null to keep showing the designed placeholder. See docs/IMAGE_GUIDE.md for the full picture-by-picture map.",
   "homepage": {
     "hero_slide_1": {
       "src": "sections/Slide1hero.png",
-      "alt": "Hero slide 1, House of Arshi"
+      "alt": "Hero slide 1, House of Arshi",
+      "mobile_focus": 0.21
     },
     "hero_slide_2": {
       "src": "sections/slideshow2.png",
-      "alt": "Hero slide 2, House of Arshi"
+      "alt": "Hero slide 2, House of Arshi",
+      "mobile_focus": 0.79
     },
     "hero_slide_3": {
       "src": "sections/slideshow3.png",
-      "alt": "Hero slide 3, House of Arshi"
+      "alt": "Hero slide 3, House of Arshi",
+      "mobile_focus": 0.21
     },
     "formals_teaser_banner": {
       "src": null,

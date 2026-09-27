@@ -15,8 +15,8 @@ SUBSECTION_PAGE_TEMPLATE = """{head}
 {navbar}
 {marquee}
 
+<main id="main">
 <div class="page-header has-bg-img theme-{theme}">
-  <img src="" alt="" class="page-header-bg" style="display:none;">
   <div class="page-header-pattern">
     <img class="motif-1" src="../assets/mark-white.png" alt="" style="object-fit:contain;">
     <img class="motif-2" src="../assets/mark-white.png" alt="" style="object-fit:contain;">
@@ -35,17 +35,18 @@ SUBSECTION_PAGE_TEMPLATE = """{head}
   <div class="container">
     <div class="filter-bar">
       <div class="filter-chips">
-        <button class="filter-chip active">All</button>
-        <button class="filter-chip">Bestseller</button>
-        <button class="filter-chip">New</button>
-        <button class="filter-chip">Under ₹1,500</button>
+        <button type="button" class="filter-chip active" aria-pressed="true">All</button>
+        <button type="button" class="filter-chip" aria-pressed="false">Bestseller</button>
+        <button type="button" class="filter-chip" aria-pressed="false">New</button>
+        <button type="button" class="filter-chip" aria-pressed="false">Under ₹1,500</button>
       </div>
-      <span class="result-count" id="resultCount">10 items</span>
+      <span class="result-count" id="resultCount"></span>
     </div>
 
     <div class="product-grid" id="productGrid"></div>
   </div>
 </section>
+</main>
 
 {footer}
 {toast}
@@ -57,30 +58,16 @@ SUBSECTION_PAGE_TEMPLATE = """{head}
   function renderSubsectionGrid() {{
     const container = document.getElementById('productGrid');
     const items = PRODUCTS['{key}'];
-    container.innerHTML = items.map((p, i) => `
-      <div class="product-card" data-product-name="${{p.name}}">
-        <div class="product-img-wrap">
-          ${{p.tag ? `<span class="product-tag gold">${{p.tag}}</span>` : ''}}
-          <button class="wishlist-btn" data-wishlist-id="${{p.id}}" onclick="toggleWishlist('${{p.id}}', this); event.stopPropagation();" aria-label="Add to wishlist">
-            <svg viewBox="0 0 24 24"><path d="M12 21s-7-4.5-9.3-9C1 8.5 2 5 5.3 5c2 0 3.3 1.2 3.7 2 .4-.8 1.7-2 3.7-2C16 5 17 8.5 15.3 12 13 16.5 12 21 12 21z"/></svg>
-          </button>
-          <a href="javascript:void(0)" onclick="openProductModal('${{p.id}}')">${{productThumbHTML(p, (i % 6) + 1)}}</a>
-          <button class="quick-add" onclick="openProductModal('${{p.id}}')">View Product</button>
-        </div>
-        <div class="product-info">
-          <div class="pname">${{p.name}}</div>
-          <div class="pprice">${{formatINR(p.price)}} <span class="strike">${{formatINR(p.mrp)}}</span></div>
-        </div>
-      </div>
-    `).join('');
+    container.innerHTML = items.map((p, i) => productCardHTML(p, i)).join('');
     document.getElementById('resultCount').textContent = `${{items.length}} items`;
   }}
   renderSubsectionGrid();
 
   document.querySelectorAll('.filter-chip').forEach(chip => {{
     chip.addEventListener('click', () => {{
-      document.querySelectorAll('.filter-chip').forEach(c => c.classList.remove('active'));
+      document.querySelectorAll('.filter-chip').forEach(c => {{ c.classList.remove('active'); c.setAttribute('aria-pressed', 'false'); }});
       chip.classList.add('active');
+      chip.setAttribute('aria-pressed', 'true');
       const label = chip.textContent.trim();
       const cards = document.querySelectorAll('#productGrid .product-card');
       let visible = 0;
