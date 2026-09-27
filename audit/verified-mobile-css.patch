@@ -1,0 +1,152 @@
+--- a/house-of-arshi-site/assets/style.css
++++ b/house-of-arshi-site/assets/style.css
+@@ -926,8 +926,8 @@
+ .footer-legal-panels {
+   border-top: 1px solid rgba(248,244,236,0.12);
+   background: var(--black-soft);
+-  margin: 0 -100vw;
+-  padding: 0 100vw;
++  box-shadow: 0 0 0 100vmax var(--black-soft);
++  clip-path: inset(0 -100vmax);
+ }
+ .footer-legal-panels[hidden] { display: none; }
+ .flp-panel {
+@@ -1030,9 +1030,8 @@
+   transition: transform 0.4s cubic-bezier(0.16,1,0.3,1);
+   display: flex;
+   flex-direction: column;
+-  box-shadow: -20px 0 60px rgba(0,0,0,0.2);
+ }
+-.drawer.active { transform: translateX(0); }
++.drawer.active { transform: translateX(0); box-shadow: -20px 0 60px rgba(0,0,0,0.2); }
+ 
+ .drawer-header {
+   display: flex;
+@@ -1219,7 +1218,8 @@
+   opacity: 0;
+   pointer-events: none;
+   transition: opacity 0.3s ease, transform 0.3s ease;
+-  white-space: nowrap;
++  width: max-content;
++  max-width: calc(100vw - 32px);
+ }
+ .toast.show {
+   opacity: 1;
+@@ -1467,35 +1467,6 @@
+ 
+ 
+ 
+-@media (max-width: 980px) {
+-  .product-grid { grid-template-columns: repeat(2, 1fr); gap: 20px; }
+-  .showcase-strip { grid-template-columns: repeat(2, 1fr); }
+-  .about-section { grid-template-columns: 1fr; gap: 40px; }
+-  .footer-grid { grid-template-columns: 1fr 1fr; gap: 36px; }
+-  .newsletter-popup { grid-template-columns: 1fr; }
+-  .newsletter-popup .np-img { display: none; }
+-  .about-row { grid-template-columns: 1fr; gap: 32px; padding: 56px 0; }
+-  .about-row.reverse { direction: ltr; }
+-  .value-cards-grid { grid-template-columns: 1fr; }
+-  .product-modal {
+-    grid-template-columns: 1fr;
+-    grid-template-rows: auto 1fr;
+-    height: auto;
+-    max-height: 92vh;
+-    overflow-y: auto;
+-    -webkit-overflow-scrolling: touch;
+-  }
+-  .modal-gallery { aspect-ratio: 4/3; height: auto; flex-shrink: 0; }
+-  .modal-thumbs { position: static; transform: none; opacity: 1; background: var(--black-soft); }
+-  .modal-dots { display: none; }
+-  .modal-info { height: auto; overflow-y: visible; padding: 28px 24px 32px; }
+-  .modal-actions { position: sticky; bottom: 0; background: var(--ivory); margin: 24px -24px -32px; padding: 16px 24px 24px; box-shadow: 0 -8px 16px rgba(248,244,236,0.95); }
+-  .cart-page-layout { grid-template-columns: 1fr; }
+-  .cart-page-summary { position: static; }
+-  .checkout-layout { grid-template-columns: 1fr; }
+-  .checkout-summary-box { position: static; }
+-  .form-row { grid-template-columns: 1fr; }
+-}
+ 
+ /* ============================================
+    Product Detail Modal
+@@ -2085,8 +2056,43 @@
+ .confirmation-details .cd-row:last-child { border-bottom: none; }
+ .confirmation-actions { display: flex; gap: 14px; justify-content: center; flex-wrap: wrap; }
+ 
++@media (max-width: 980px) {
++  .product-grid { grid-template-columns: repeat(2, 1fr); gap: 20px; }
++  .showcase-strip { grid-template-columns: repeat(2, 1fr); }
++  .about-section { grid-template-columns: 1fr; gap: 40px; }
++  .footer-grid { grid-template-columns: 1fr 1fr; gap: 36px; }
++  .newsletter-popup { grid-template-columns: 1fr; }
++  .newsletter-popup .np-img { display: none; }
++  .about-row { grid-template-columns: 1fr; gap: 32px; padding: 56px 0; }
++  .about-row.reverse { direction: ltr; }
++  .value-cards-grid { grid-template-columns: 1fr; }
++  .product-modal {
++    grid-template-columns: minmax(0, 1fr);
++    grid-template-rows: auto 1fr;
++    height: auto;
++    max-height: 92vh;
++    overflow-y: auto;
++    -webkit-overflow-scrolling: touch;
++  }
++  .modal-gallery { aspect-ratio: 4/3; height: auto; flex-shrink: 0; }
++  .modal-thumbs { position: static; transform: none; opacity: 1; background: var(--black-soft); }
++  .modal-dots { display: none; }
++  .modal-info { height: auto; overflow-y: visible; padding: 28px 24px 32px; }
++  .modal-actions { position: sticky; bottom: 0; background: var(--ivory); margin: 24px -24px -32px; padding: 16px 24px 24px; box-shadow: 0 -8px 16px rgba(248,244,236,0.95); }
++  .cart-page-layout { grid-template-columns: 1fr; }
++  .cart-page-summary { position: static; }
++  .checkout-layout { grid-template-columns: 1fr; }
++  .checkout-summary-box { position: static; }
++  .form-row { grid-template-columns: 1fr; }
++}
++
+ @media (max-width: 720px) {
+-  .nav-inner { grid-template-columns: auto auto auto; }
++  .nav-inner { display: flex; justify-content: space-between; padding: 10px 16px; gap: 12px; }
++  .nav-left { gap: 12px; min-width: 0; }
++  .burger { flex-shrink: 0; }
++  .nav-logo .mark-img { height: 32px; }
++  .nav-right { gap: 4px; }
++  .nav-account-link { display: none; }
+   .nav-links { display: none; }
+   .burger { display: flex; }
+   .search-box { display: none; }
+@@ -2103,7 +2109,9 @@
+   .sarees-banner-content { padding: 40px 28px; }
+   .about-thanks-banner { padding: 48px 24px; }
+   .modal-info { padding: 24px 20px 28px; }
+-  .modal-actions { margin: 24px -20px -28px; padding: 16px 20px 20px; }
++  .modal-actions { margin: 24px -20px -28px; padding: 16px 20px 20px; gap: 8px; }
++  .modal-actions .btn { padding: 14px 12px; letter-spacing: 0.04em; }
++  .modal-wishlist-btn { width: 48px; height: 48px; }
+   .cart-page-row { grid-template-columns: 60px 1fr; row-gap: 10px; }
+   .cart-page-line-total { grid-column: 2; text-align: left; }
+   .cart-page-remove { position: absolute; top: 20px; right: 0; }
+--- a/house-of-arshi-site/pages/login.html
++++ b/house-of-arshi-site/pages/login.html
+@@ -27,8 +27,8 @@
+     position: absolute;
+     top: 50%;
+     left: 50%;
+-    width: 720px;
+-    height: 720px;
++    width: min(720px, 100vw);
++    height: min(720px, 100vw);
+     transform: translate(-50%, -50%);
+     background: radial-gradient(circle, rgba(182, 138, 78, 0.12) 0%, rgba(182, 138, 78, 0.04) 40%, transparent 70%);
+     border-radius: 50%;
+--- a/house-of-arshi-site/pages/signup.html
++++ b/house-of-arshi-site/pages/signup.html
+@@ -27,8 +27,8 @@
+     position: absolute;
+     top: 50%;
+     left: 50%;
+-    width: 720px;
+-    height: 720px;
++    width: min(720px, 100vw);
++    height: min(720px, 100vw);
+     transform: translate(-50%, -50%);
+     background: radial-gradient(circle, rgba(182, 138, 78, 0.12) 0%, rgba(182, 138, 78, 0.04) 40%, transparent 70%);
+     border-radius: 50%;
